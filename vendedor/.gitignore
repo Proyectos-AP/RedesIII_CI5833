@@ -1,0 +1,5 @@
+env/
+ecommerce/ecommerce/__pycache__/
+ecommerce/sales/__pycache__/
+ecommerce/sales/migrations/
+ecommerce/db.sqlite3

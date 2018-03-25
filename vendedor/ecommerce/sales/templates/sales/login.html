@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Inicio de sesión</title>
+    <style>
+      label{
+        display: inline-block;
+        float: left;
+        clear: left;
+        width: 250px;
+        text-align: right;
+      }
+      input {
+        display: inline-block;
+        float: left;
+      }
+    </style>
+  </head>
+  <body>
+    <form action="{% url 'sales:login' %}" method="post">
+
+      <label for="email">Correo electrónico</label>
+      <input type="text" name="email" required>
+
+      <label for="password">Contraseña</label>
+      <input type="password" name="password" value="" required>
+
+      <input type="submit" value="Iniciar sesión">
+
+
+    </form>
+
+
+  </body>
+</html>
