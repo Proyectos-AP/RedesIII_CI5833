@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.template import loader
+from sales.models import Client
 
 # Create your views here.
 
@@ -12,19 +13,17 @@ def register(request):
 
 
     if request.method == 'POST':
+        try:
+            username = request.POST['username']
+            password = request.POST['psw']
 
-        username = request.POST['username']
-        name = request.POST['name']
-        last_name = request.POST['lastName']
-        email = request.POST['email']
-        password = request.POST['password']
-        user = User.objects.create_user(username,email,password)
-
-        user.first_name = name
-        user.last_name = last_name
-        user.save()
-
-        return render(request,'sales/index.html')
+            #Debe tener una longitud mínima, al menos un carácter no alfa numérico y una letra mayúscula
+            user = Client(username=username,password=password)
+            user.save()
+            return render(request,'sales/index.html')
+        except:
+            print("Error registrando al usuario")
+            return HttpResponse("Error")
 
     else:
         return render(request,'sales/register.html')
