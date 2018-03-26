@@ -1,8 +1,11 @@
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.template import loader
 from sales.models import Client, Product
+import requests
+import json
 
 # Create your views here.
 
@@ -25,6 +28,29 @@ def register(request):
 
 def login(request):
     if request.method == 'POST':
+
+        # Verify Captcha
+        session = requests.Session()
+        params = {
+            'secret': settings.CAPTCHA_SECRET_KEY,
+            'response': request.POST['g-recaptcha-response'],
+            }
+        response = session.post("https://www.google.com/recaptcha/api/siteverify", data=params)
+        json_data = json.loads(response.text)
+
+        if json_data['success']:
+            return render(request,'sales/platform.html')
+        else:
+            return render(request,'sales/login.html')
+
+        # Verify if the user is blocked
+
+        # Verify number of login attempts
+
+        # Verify user credentials
+
+
+        # Redirect to sales platform
         return render(request,'sales/platform.html')
     else:
         return render(request,'sales/login.html')
