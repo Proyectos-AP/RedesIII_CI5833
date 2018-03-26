@@ -22,4 +22,6 @@ app_name = 'bancoCliente'
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',views.index,name='index'),
+    path('crearCuenta',views.crearCuenta,name='crearCuenta'),
+    path('procesarDatosCuenta',views.procesarDatosCuenta,name='procesarDatosCuenta'),
 ]
