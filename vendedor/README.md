@@ -23,6 +23,11 @@ En este directorio se define la aplicación web correspondiente al sitio de come
 ```
   donde *clave_secreta* se encuentra en la carpeta Drive del proyecto.
 
+5. Actualizar las variables de ambiente del sistema
+``` bash
+  source ~/.bashrc
+```
+
 # Ejecución
 
 1. Activar el ambiente virtual
