@@ -23,5 +23,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('',views.index,name='index'),
     path('crearCuenta',views.crearCuenta,name='crearCuenta'),
+    path('preguntaSecreta',views.preguntaSecreta,name='preguntaSecreta'),
+    path('confirmarPregunta',views.confirmarPregunta,name='confirmarPregunta'),
     path('procesarDatosCuenta',views.procesarDatosCuenta,name='procesarDatosCuenta'),
 ]
