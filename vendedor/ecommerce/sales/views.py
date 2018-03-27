@@ -68,7 +68,7 @@ def logout_view(request):
     logout(request)
     return render(request,'sales/index.html')
 
-@login_required(login_url='/sales/login/')
+@login_required(login_url='/login/')
 def platform(request):
     if request.method == 'POST':
         # Process a transaction
