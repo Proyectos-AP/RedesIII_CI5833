@@ -4,6 +4,20 @@ from django.shortcuts import render
 from django.template import loader
 from bancoCliente.models import *
 
+MONTO = 1000
+ID_VENDEDOR = "J-1234"
+
+
+def verificarSaldo(cuenta,monto):
+
+	if (cuenta.saldo>=monto):
+
+		cuenta.saldo = cuenta.saldo - monto
+		cuenta.save()
+		return True
+
+	return False
+
 # Se muestra el index de la pagina.
 def index(request):
     return render(request, 'bancoCliente/index.html')
@@ -46,9 +60,19 @@ def confirmarPregunta(request):
 
 		if (preguntas.respuesta == respuesta['respuesta']):
 
-			# Aqui se hace la comunicación con el banco del vendedor
-			return render(request, 'bancoCliente/notificacion.html',
-						{'mensaje':"Se está procesando el pago."})
+			# Se verifica si el comprador tiene el dinero necesario para
+			# realizar la compra.
+			if (verificarSaldo(cuenta,MONTO)):
+
+				# Aquí se hace la comunicación con el banco del vendedor
+				return render(request, 'bancoCliente/notificacion.html',
+							{'mensaje':"Se está procesando el pago."})
+
+			else:
+				# Mensaje de error.
+				return render(request, 'bancoCliente/notificacion.html',
+							{'mensaje':"Su saldo no es suficiente."})
+
 
 	return render(request, 'bancoCliente/notificacion.html',
 				{'mensaje':"La respuesta a la pregunta secreta es incorrecta."})
