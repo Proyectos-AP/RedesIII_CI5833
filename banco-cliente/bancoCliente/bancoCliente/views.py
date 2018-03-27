@@ -1,10 +1,13 @@
 from django.contrib.auth.models import User
 from django.http import HttpResponse
+from django.conf import settings
 from django.shortcuts import render
 from django.template import loader
 from bancoCliente.models import *
 import crypt
 import hashlib
+import requests
+import json
 
 MONTO = 1000
 ID_VENDEDOR = "J-1234"
@@ -50,25 +53,42 @@ def preguntaSecreta(request):
 
 	respuesta = request.POST
 
+	# Se busca la cuenta dentro de la base de datos
 	cuenta = Cuentas.objects.filter(ci=respuesta['ci'])
-	
+
+	# Se verifica el Captcha
+	session = requests.Session()
+	params = {
+	    'secret': settings.CAPTCHA_SECRET_KEY,
+	    'response': request.POST['g-recaptcha-response'],
+	}
+
+	response = session.post("https://www.google.com/recaptcha/api/siteverify", data=params)
+	json_data = json.loads(response.text)
+
+	print("Este es el json de respuesta: ",json_data)
+
+	# Si no existe la cuenta se lanza un mensaje de error
 	if (len(cuenta)<=0):
 		print("Mostrar mensaje de error")
 		return render(request, 'bancoCliente/index.html',
 					{'mensaje':"No existe una cuenta asociada a dicha cédula."})
-		
+	
+	elif (not(json_data['success'])):
+		# Si el Captcha no paso la prueba, se lanza un mensaje de error.
+		return render(request, 'bancoCliente/index.html',
+					{'mensaje':"Problemas con el Captcha."})
+
 	else:
 		cuenta    = cuenta[0]
 
 		# Se verifica la tarjeta de crédito
-		print("Esta es la tdc: ",cuenta.tdc_number)
-		print(comparador(respuesta['tdc'],cuenta.tdc_number))
-
 		if (comparador(respuesta['tdc'],cuenta.tdc_number)):
 
 			preguntas = Preguntas.objects.filter(cuenta=cuenta)
 			preguntas = preguntas[0]
 
+			# Se muestra la pregunta secreta
 			return render(request, 
 						'bancoCliente/preguntas.html',
 						{'pregunta':preguntas.pregunta,
