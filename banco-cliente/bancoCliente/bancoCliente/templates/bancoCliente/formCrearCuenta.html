@@ -9,12 +9,19 @@
 
     <form action="/procesarDatosCuenta" method="post">
         {% csrf_token %}
+
+        <label for="ci">CI: </label>
+        <input id="ci" type="int" name="ci"> <br><br>
         <label for="tdc">Tarjeta de crédito: </label>
-        <input id="tdc" type="int" name="tdc">   <br>
+        <input id="tdc" type="int" name="tdc">   <br><br>
+        <label for="numero_secreto">Número secreto: </label>
+        <input id="numero_secreto" type="text" name="numero_secreto"> <br><br>
+        <label for="fecha_vencimiento">Fecha de vencimiento: </label>
+        <input id="fecha_vencimiento" type="text" name="fecha_vencimiento"> <br><br>
         <label for="pregunta_seguridad">Pregunta de seguridad: </label>
-        <input id="pregunta_seguridad" type="text" name="pregunta_seguridad">    <br>
+        <input id="pregunta_seguridad" type="text" name="pregunta_seguridad"> <br><br>
         <label for="respuesta_seguridad">Respuesta: </label>
-        <input id="respuesta_seguridad" type="text" name="respuesta_seguridad">
+        <input id="respuesta_seguridad" type="text" name="respuesta_seguridad"> <br><br>
         <input type="submit" value="OK">
     </form>
 

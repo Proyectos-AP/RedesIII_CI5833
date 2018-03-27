@@ -10,8 +10,10 @@
     {{ mensaje }}
     <form action="/preguntaSecreta" method="post">
         {% csrf_token %}
+        <label for="ci">CI: </label>
+        <input id="ci" type="text" name="ci"> <br><br>
         <label for="tdc">Tarjeta de crédito: </label>
-        <input id="tdc" type="text" name="tdc"> <br>
+        <input id="tdc" type="text" name="tdc"> <br><br>
         <input type="submit" value="OK">
     </form>
 

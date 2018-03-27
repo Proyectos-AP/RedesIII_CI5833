@@ -3,10 +3,32 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.template import loader
 from bancoCliente.models import *
+import crypt
+import hashlib
 
 MONTO = 1000
 ID_VENDEDOR = "J-1234"
 
+def encriptar(mensaje):
+
+	algo = "sha512".encode('utf-8')
+
+	mensaje = str(mensaje).encode('utf-8')
+
+	# Se crea el bit de salt
+	salt = crypt.mksalt(crypt.METHOD_SHA512).split("$")[-1].encode('utf-8')
+
+	# Se encripta el mensaje
+	hash_object = hashlib.sha512(salt+mensaje)
+
+	return '%s$%s$%s' % (algo.decode('utf-8'), salt.decode('utf-8'), hash_object.hexdigest())
+
+def comparador(raw_password, enc_password):
+
+    algo, salt, hsh = enc_password.split('$')
+    raw_password = str(raw_password).encode('utf-8')
+
+    return hsh == hashlib.sha512(salt.encode('utf-8')+raw_password).hexdigest()
 
 def verificarSaldo(cuenta,monto):
 
@@ -27,22 +49,33 @@ def index(request):
 def preguntaSecreta(request):
 
 	respuesta = request.POST
-	cuenta = Cuentas.objects.filter(tdc_number=respuesta['tdc'])
+
+	cuenta = Cuentas.objects.filter(ci=respuesta['ci'])
 	
 	if (len(cuenta)<=0):
 		print("Mostrar mensaje de error")
 		return render(request, 'bancoCliente/index.html',
-					{'mensaje':"El número de la tarjeta de crédito es incorrecto."})
+					{'mensaje':"No existe una cuenta asociada a dicha cédula."})
 		
 	else:
 		cuenta    = cuenta[0]
-		preguntas = Preguntas.objects.filter(cuenta=cuenta)
-		preguntas = preguntas[0]
 
-	return render(request, 
-				'bancoCliente/preguntas.html',
-				{'pregunta':preguntas.pregunta,
-				'idCuenta' :cuenta.id})
+		# Se verifica la tarjeta de crédito
+		print("Esta es la tdc: ",cuenta.tdc_number)
+		print(comparador(respuesta['tdc'],cuenta.tdc_number))
+
+		if (comparador(respuesta['tdc'],cuenta.tdc_number)):
+
+			preguntas = Preguntas.objects.filter(cuenta=cuenta)
+			preguntas = preguntas[0]
+
+			return render(request, 
+						'bancoCliente/preguntas.html',
+						{'pregunta':preguntas.pregunta,
+						'idCuenta' :cuenta.id})
+
+		return render(request, 'bancoCliente/index.html',
+					{'mensaje':"El número de la tarjeta de crédito es incorrecto."})
 
 def confirmarPregunta(request):
 
@@ -57,9 +90,9 @@ def confirmarPregunta(request):
 	else:
 		preguntas = Preguntas.objects.filter(cuenta=cuenta)
 		preguntas = preguntas[0]
+		print(comparador(respuesta['respuesta'],preguntas.respuesta))
 
-		if (preguntas.respuesta == respuesta['respuesta']):
-
+		if (comparador(respuesta['respuesta'],preguntas.respuesta)):
 			# Se verifica si el comprador tiene el dinero necesario para
 			# realizar la compra.
 			if (verificarSaldo(cuenta,MONTO)):
@@ -74,8 +107,8 @@ def confirmarPregunta(request):
 							{'mensaje':"Su saldo no es suficiente."})
 
 
-	return render(request, 'bancoCliente/notificacion.html',
-				{'mensaje':"La respuesta a la pregunta secreta es incorrecta."})
+		return render(request, 'bancoCliente/notificacion.html',
+					{'mensaje':"La respuesta a la pregunta secreta es incorrecta."})
 
 # Se muestra el form para crear una nueva cuenta.
 def crearCuenta(request):
@@ -86,12 +119,26 @@ def procesarDatosCuenta(request):
     print("Este es el post del form: ",request.POST)
     respuesta = request.POST
 
-    cuenta   = Cuentas(tdc_number=respuesta['tdc'],
-    				   saldo = 1000000 )
+    tdc                 = encriptar(respuesta['tdc'])
+    numero_secreto      = encriptar(respuesta['numero_secreto'])
+    fecha_vencimiento   = encriptar(respuesta['fecha_vencimiento'])
+    respuesta_seguridad = encriptar(respuesta['respuesta_seguridad'])
+
+    print("TDC: ",tdc)
+    print("Número secreto: ",encriptar(respuesta['numero_secreto']))
+    print("Fecha vencimiento: ",encriptar(respuesta['fecha_vencimiento']))
+
+    print(comparador(respuesta['tdc'], tdc))
+
+    cuenta   = Cuentas(	ci                = respuesta['ci'],
+    					tdc_number        = tdc,
+    					secret_number     = numero_secreto,
+    					fecha_vencimiento = fecha_vencimiento,
+    					saldo             = 1000000 )
 
     cuenta.save()
     pregunta = Preguntas(pregunta=respuesta['pregunta_seguridad'],
-    					respuesta=respuesta['respuesta_seguridad'],
+    					respuesta=respuesta_seguridad,
     					cuenta = cuenta)
 
     # Se almacena la información de la base de datos
