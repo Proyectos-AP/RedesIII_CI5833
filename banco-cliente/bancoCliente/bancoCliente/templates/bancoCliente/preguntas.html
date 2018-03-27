@@ -10,8 +10,8 @@
     <form action="/confirmarPregunta" method="post">
         {% csrf_token %}
         <label for="respuesta">{{ pregunta }}</label> <br><br>
-        <input id="respuesta" type="text" name="respuesta"> <br><br>
-        <input id="id_cuenta" type="hidden" name="id_cuenta" value="{{ idCuenta }}"> <br>
+        <input id="respuesta" type="text" name="respuesta" required> <br><br>
+        <input id="id_cuenta" type="hidden" name="id_cuenta" value="{{ idCuenta }}" required> <br>
         <input type="submit" value="OK">
     </form>
 
