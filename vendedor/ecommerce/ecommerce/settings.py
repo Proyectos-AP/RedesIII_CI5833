@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'sales.apps.SalesConfig'
+    'sales.apps.SalesConfig',
+    'axes'
 ]
 
 MIDDLEWARE = [
@@ -121,3 +122,20 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 CAPTCHA_SECRET_KEY = os.environ.get('CAPTCHA_SECRET_KEY')
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    },
+    'axes_cache': {
+        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+    }
+}
+
+AXES_CACHE = 'axes_cache'
+#AXES_LOCK_OUT_AT_FAILURE = True
+#AXES_USE_USER_AGENT = True
+#AXES_LOCK_OUT_BY_COMBINATION_USER_AND_IP = True
+#AXES_ONLY_USER_FAILURES = True
+#AXES_LOCKOUT_TEMPLATE = 'sales/locked.html'
+AXES_LOCKOUT_URL = 'sales/locked'

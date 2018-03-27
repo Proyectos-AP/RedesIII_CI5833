@@ -1,3 +1,4 @@
+from axes.utils import reset
 from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
@@ -18,7 +19,7 @@ def register(request):
     if request.method == 'POST':
         try:
             username = request.POST['username']
-            password = request.POST['psw']
+            password = request.POST['password']
 
             user = User.objects.create_user(username=username,password=password)
             user.save()
@@ -35,7 +36,7 @@ def login_view(request):
     if request.method == 'POST':
 
         username = request.POST['username']
-        password = request.POST['psw']
+        password = request.POST['password']
 
         # Verify Captcha
         session = requests.Session()
@@ -54,7 +55,7 @@ def login_view(request):
                 # Redirect to sales platform
                 return render(request,'sales/platform.html')
             else:
-                return(render(request,'sales/error.html'))
+                return render(request,'sales/login.html')
         else:
             return render(request,'sales/login.html')
 
@@ -78,3 +79,15 @@ def platform(request):
             'products_list': products_list,
             }
         return render(request,'sales/platform.html',context)
+
+def locked(request):
+    return render(request,'sales/locked.html')
+
+def unlock(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        reset(username=username)
+        return(render(request,'sales/index.html'))
+
+    else:
+        return(render(request,'sales/unlock.html'))
