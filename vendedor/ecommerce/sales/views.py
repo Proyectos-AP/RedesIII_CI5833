@@ -1,9 +1,12 @@
+from axes.utils import reset
 from django.conf import settings
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.template import loader
-from sales.models import Client, Product
+from sales.models import Product
 import requests
 import json
 
@@ -16,9 +19,12 @@ def register(request):
     if request.method == 'POST':
         try:
             username = request.POST['username']
-            password = request.POST['psw']
-            user = Client(username=username,password=password)
+            password = request.POST['password']
+
+            user = User.objects.create_user(username=username,password=password)
             user.save()
+
+
             return render(request,'sales/index.html')
         except:
             return render(request,'sales/error.html')
@@ -26,8 +32,11 @@ def register(request):
     else:
         return render(request,'sales/register.html')
 
-def login(request):
+def login_view(request):
     if request.method == 'POST':
+
+        username = request.POST['username']
+        password = request.POST['password']
 
         # Verify Captcha
         session = requests.Session()
@@ -39,33 +48,46 @@ def login(request):
         json_data = json.loads(response.text)
 
         if json_data['success']:
-            return render(request,'sales/platform.html')
+            # Verify user credentials
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                # Redirect to sales platform
+                return render(request,'sales/platform.html')
+            else:
+                return render(request,'sales/login.html')
         else:
             return render(request,'sales/login.html')
 
         # Verify if the user is blocked
-
         # Verify number of login attempts
-
-        # Verify user credentials
-
-
-        # Redirect to sales platform
-        return render(request,'sales/platform.html')
     else:
         return render(request,'sales/login.html')
 
-def logout(request):
-    return HttpResponse("Logout")
+def logout_view(request):
+    logout(request)
+    return render(request,'sales/index.html')
 
+@login_required(login_url='/login/')
 def platform(request):
     if request.method == 'POST':
         # Process a transaction
         print("Process a transaction")
     else:
-
         products_list = Product.objects.all()
         context = {
             'products_list': products_list,
             }
         return render(request,'sales/platform.html',context)
+
+def locked(request):
+    return render(request,'sales/locked.html')
+
+def unlock(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        reset(username=username)
+        return(render(request,'sales/index.html'))
+
+    else:
+        return(render(request,'sales/unlock.html'))

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Desbloquear cuenta</title>
+    <style>
+      /* Style all input fields */
+      input {
+          width: 100%;
+          padding: 12px;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+          box-sizing: border-box;
+          margin-top: 6px;
+          margin-bottom: 16px;
+      }
+
+      /* Style the submit button */
+      input[type=submit] {
+          background-color: #4CAF50;
+          color: white;
+      }
+
+    </style>
+  </head>
+  <body>
+    <h1>Para desbloquear su cuenta, introduzca su usuario</h1>
+    <form action="{% url 'sales:unlock' %}" method="post">
+      {% csrf_token %}
+      <label for="username">Nombre de usuario</label>
+      <input type="text" id="username" name="username" value="">
+      <input type="submit" name="" value="Reto de seguridad">
+    </form>
+  </body>
+</html>

@@ -75,8 +75,8 @@ input[type=submit] {
     <label for="usrname">Nombre de usuario</label>
     <input type="text" id="username" name="username" required>
 
-    <label for="psw">Contraseña</label>
-    <input type="password" id="psw" name="psw" pattern="(?=*[A-Z])(?=.*[^a-zA-Z0-9]).{8,}" title="La contraseña debe contener al menos una mayúscula, un caracter alfanumérico y al menos 8 caracteres" required>
+    <label for="password">Contraseña</label>
+    <input type="password" id="password" name="password" pattern="(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{8,}" title="La contraseña debe contener al menos una mayúscula, un caracter alfanumérico y al menos 8 caracteres" required>
 
     <input type="submit" value="Registrarse">
   </form>
@@ -90,7 +90,7 @@ input[type=submit] {
 </div>
 
 <script>
-var myInput = document.getElementById("psw");
+var myInput = document.getElementById("password");
 var capital = document.getElementById("capital");
 var number = document.getElementById("number");
 var length = document.getElementById("length");
