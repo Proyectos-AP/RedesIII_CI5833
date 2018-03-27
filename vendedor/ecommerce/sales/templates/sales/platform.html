@@ -5,6 +5,17 @@
     <title>Plataforma de ventas</title>
   </head>
   <body>
+    <h1>En este sitio encontrará los productos disponibles</h1>
 
+    {% if products_list %}
+        <ul>
+        {% for product in products_list %}
+            <li>{{product.description}} - {{product.amount}} - <a href="#">Comprar</a> </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No hay productos disponibles en la aplicación.</p>
+    {% endif %}
+    <a href="{% url 'sales:logout' %}">Cerrar sesión</a>
   </body>
 </html>

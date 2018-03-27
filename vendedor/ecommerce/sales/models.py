@@ -5,6 +5,9 @@ class Client(models.Model):
     username = models.CharField(max_length=200)
     password = models.CharField(max_length=200)
     logged_in = models.BooleanField(default=False)
+    login_try = models.IntegerField(default=0)
+    blocked = models.BooleanField(default=False)
+
 
 class Product(models.Model):
     description = models.CharField(max_length=200)
