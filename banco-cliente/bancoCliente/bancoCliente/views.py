@@ -4,7 +4,6 @@ from django.conf import settings
 from django.shortcuts import render
 from django.template import loader
 from bancoCliente.models import *
-from .modules.mensaje import *
 import crypt
 import hashlib
 import requests
@@ -23,7 +22,9 @@ def comunicacion_banco_vendedor(idVendedor,idComprador,monto):
 	ssl_sock.connect(('www.r3bancovendedor.tk', 8082))
 
 	# Se contruye el mensaje que se va a enviar al banco del vendedor
-	paquete = Mensaje(10,idVendedor,idComprador,monto,"Batch al banco del vendedor")
+	paquete = {"id": 10, "idVendedor":idVendedor,
+				"idComprador":idComprador, "monto": monto,
+				"mensaje": "Batch al banco del vendedor"}
 
 	print(paquete)
 	ssl_sock.write(pickle.dumps(paquete))
@@ -32,11 +33,11 @@ def comunicacion_banco_vendedor(idVendedor,idComprador,monto):
 
 	# Se recibe el mensaje de respuesta del servidor
 	data = pickle.loads(data)
-	print("El mensaje es:",data.mensaje)
+	print("El mensaje es:",data["mensaje"])
 
 	ssl_sock.close()
 
-	if (data.id == 200):
+	if (data["id"] == 200):
 		return True
 	else:
 		return False
@@ -148,9 +149,8 @@ def confirmarPregunta(request):
 
 			print("Cuenta comprador: ",cuenta.ci)
 			# Aquí se hace la comunicación con el banco del vendedor
-			#exito = comunicacion_banco_vendedor(ID_VENDEDOR,cuenta.ci,MONTO)
+			exito = comunicacion_banco_vendedor(ID_VENDEDOR,cuenta.ci,MONTO)
 
-			exito = True
 			# Caso en el que la transaccion con el vendedor se hizo de manera
 			# exitosa
 			if (exito):
