@@ -1,9 +1,9 @@
 import socket
 import pickle
 import ssl
+import json
 import bdBancoVendedor 
 from pony.orm import *
-from mensaje import *
 from socket import AF_INET, SOCK_STREAM, SO_REUSEADDR, SOL_SOCKET, SHUT_RDWR
 
 KEYFILE = './certificados/server.key'
@@ -16,29 +16,29 @@ def check_message(mensaje):
 
     # Se verifica si existe la cuenta del vendedor en la base 
     # de datos
-    cuenta_vendedor = select(c for c in bdBancoVendedor.Cuenta if c.idVendedor == mensaje.idVendedor)[:]
+    cuenta_vendedor = select(c for c in bdBancoVendedor.Cuenta if c.idVendedor == mensaje["idVendedor"])[:]
 
     if (len(cuenta_vendedor) == 0):
 
         # Se retorna un mensaje de error
-        return ResponseMessage(401,"Error: No existe la cuenta del vendedor")
+        return {"id":401, "mensaje":"Error: No existe la cuenta del vendedor"}
 
     else:
         cuenta = cuenta_vendedor[0]
         # Se ajusta el saldo del vendedor
         print("Monto de antes: ",cuenta.monto)
-        cuenta.monto = cuenta.monto + mensaje.monto
+        cuenta.monto = cuenta.monto + mensaje["monto"]
+        print("Monto nuevo: ",cuenta.monto)
         commit()
 
         # Se retorna un mensaje de exito
-        return ResponseMessage(200,"Exito")
+        return {"id":200, "mensaje":"Exito"}
 
 def echo_client(s):
 
     # Se recibe la informacion del cliente
     data = s.recv(8192)
     data = pickle.loads(data)
-    print("El mensaje es:",data.mensaje)
 
     # Se verifica la cuenta del vendedor
     response_message = check_message(data)
