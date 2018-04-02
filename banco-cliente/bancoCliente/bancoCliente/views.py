@@ -4,13 +4,42 @@ from django.conf import settings
 from django.shortcuts import render
 from django.template import loader
 from bancoCliente.models import *
+from .modules.mensaje import *
 import crypt
 import hashlib
 import requests
 import json
+import pickle 
+import socket, ssl
 
 MONTO = 1000
-ID_VENDEDOR = "J-1234"
+ID_VENDEDOR = "R1234"
+PUERTO_BANCO_VENDEDOR = 8082
+
+def comunicacion_banco_vendedor(idVendedor,idComprador,monto):
+
+	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+	ssl_sock = ssl.wrap_socket(s,cert_reqs=ssl.CERT_REQUIRED, ca_certs='/home/prmm95/Documents/RedesIII_CI5833/banco-vendedor/certificados/server.crt')
+	ssl_sock.connect(('www.r3bancovendedor.tk', 8082))
+
+	# Se contruye el mensaje que se va a enviar al banco del vendedor
+	paquete = Mensaje(10,idVendedor,idComprador,monto,"Batch al banco del vendedor")
+
+	print(paquete)
+	ssl_sock.write(pickle.dumps(paquete))
+	# Se envia el mensaje
+	data = ssl_sock.recv(8192)
+
+	# Se recibe el mensaje de respuesta del servidor
+	data = pickle.loads(data)
+	print("El mensaje es:",data.mensaje)
+
+	ssl_sock.close()
+
+	if (data.id == 200):
+		return True
+	else:
+		return False
 
 def encriptar(mensaje):
 
@@ -57,16 +86,16 @@ def preguntaSecreta(request):
 	cuenta = Cuentas.objects.filter(ci=respuesta['ci'])
 
 	# Se verifica el Captcha
-	session = requests.Session()
-	params = {
-	    'secret': settings.CAPTCHA_SECRET_KEY,
-	    'response': request.POST['g-recaptcha-response'],
-	}
+	# session = requests.Session()
+	# params = {
+	#     'secret': settings.CAPTCHA_SECRET_KEY,
+	#     'response': request.POST['g-recaptcha-response'],
+	# }
 
-	response = session.post("https://www.google.com/recaptcha/api/siteverify", data=params)
-	json_data = json.loads(response.text)
+	#response = session.post("https://www.google.com/recaptcha/api/siteverify", data=params)
+	#json_data = json.loads(response.text)
 
-	print("Este es el json de respuesta: ",json_data)
+	#print("Este es el json de respuesta: ",json_data)
 
 	# Si no existe la cuenta se lanza un mensaje de error
 	if (len(cuenta)<=0):
@@ -74,10 +103,10 @@ def preguntaSecreta(request):
 		return render(request, 'bancoCliente/index.html',
 					{'mensaje':"No existe una cuenta asociada a dicha cédula."})
 	
-	elif (not(json_data['success'])):
-		# Si el Captcha no paso la prueba, se lanza un mensaje de error.
-		return render(request, 'bancoCliente/index.html',
-					{'mensaje':"Problemas con el Captcha."})
+	#elif (not(json_data['success'])):
+	#	# Si el Captcha no paso la prueba, se lanza un mensaje de error.
+	#	return render(request, 'bancoCliente/index.html',
+	#				{'mensaje':"Problemas con el Captcha."})
 
 	else:
 		cuenta    = cuenta[0]
@@ -107,26 +136,50 @@ def confirmarPregunta(request):
 		return render(request, 'bancoCliente/index.html',
 					{'mensaje':"El número de la tarjeta de crédito es incorrecto."})
 
-	else:
-		preguntas = Preguntas.objects.filter(cuenta=cuenta)
-		preguntas = preguntas[0]
-		print(comparador(respuesta['respuesta'],preguntas.respuesta))
 
-		if (comparador(respuesta['respuesta'],preguntas.respuesta)):
-			# Se verifica si el comprador tiene el dinero necesario para
-			# realizar la compra.
-			if (verificarSaldo(cuenta,MONTO)):
+	preguntas = Preguntas.objects.filter(cuenta=cuenta)
+	preguntas = preguntas[0]
+	print(comparador(respuesta['respuesta'],preguntas.respuesta))
 
-				# Aquí se hace la comunicación con el banco del vendedor
+	if (comparador(respuesta['respuesta'],preguntas.respuesta)):
+		# Se verifica si el comprador tiene el dinero necesario para
+		# realizar la compra.
+		if (verificarSaldo(cuenta,MONTO)):
+
+			print("Cuenta comprador: ",cuenta.ci)
+			# Aquí se hace la comunicación con el banco del vendedor
+			#exito = comunicacion_banco_vendedor(ID_VENDEDOR,cuenta.ci,MONTO)
+
+			exito = True
+			# Caso en el que la transaccion con el vendedor se hizo de manera
+			# exitosa
+			if (exito):
+
+				# Se modifica el saldo del comprador
+				cuenta.monto = cuenta.saldo - MONTO
+				cuenta.save()
+
+				# Se muestra un mensaje de exito
 				return render(request, 'bancoCliente/notificacion.html',
-							{'mensaje':"Se está procesando el pago."})
+							{'mensaje':"Se procesó el pago."})
 
 			else:
-				# Mensaje de error.
+
+				# Caso en el que la transaccion con el vendedor no se hizo de manera
+				# exitosa
 				return render(request, 'bancoCliente/notificacion.html',
-							{'mensaje':"Su saldo no es suficiente."})
+							{'mensaje':"Hubo problemas en la transacción."})
 
 
+		else:
+			# Caso en el que el comprador no tiene saldo suficiente para
+			# realizar la compra.
+			return render(request, 'bancoCliente/notificacion.html',
+						{'mensaje':"Su saldo no es suficiente."})
+
+	else:
+		# Caso en el que la respuesta de seguridad se contestó de manera
+		# incorrecta
 		return render(request, 'bancoCliente/notificacion.html',
 					{'mensaje':"La respuesta a la pregunta secreta es incorrecta."})
 
