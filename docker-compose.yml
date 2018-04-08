@@ -12,19 +12,36 @@ version: '3'
 services:
   # Como se usa SQLite, no es necesario establecer un servicio db.
 
-  # El servicio 'web' es quien contendrá la aplicación en Django y quien será
+  # El servicio 'vendedor_web' es quien contendrá la aplicación en Django y quien será
   # expuesta.
-  web:
+  vendedor_web:
     # Para exponer la aplicación debe hacerse un build según el 'dockerfile'
     # Aquí se dice en cuál carpeta está el dockerfile.
-    build: .
+    build: ./vendedor/
     # Dice que imagen de docker se utilizará para hacer el build.
     # image: fernandobperezm/proyecto-redes3-vendedor:1.0
     # El comando que se ejecutará al hacer deploy de la app.
-    command: python3 ecommerce/manage.py runserver 0.0.0.0:8000
+    command: bash -c "python3 ./vendedor/ecommerce/manage.py runserver 0.0.0.0:8000"
     # Cuando hayan cambios en la carpeta actual, a donde mandarlos dentro del contenedor.
     volumes:
       - .:/vendedor
     # El puerto XX dentro del host se mapeará YY en el contenedor (XX:YY) y viceversa
     ports:
       - "8000:8000"
+
+  # El servicio 'vendedor_web' es quien contendrá la aplicación en Django y quien será
+  # expuesta.
+  banco_cliente_web:
+    # Para exponer la aplicación debe hacerse un build según el 'dockerfile'
+    # Aquí se dice en cuál carpeta está el dockerfile.
+    build: ./banco-cliente
+    # Dice que imagen de docker se utilizará para hacer el build.
+    # image: fernandobperezm/proyecto-redes3-vendedor:1.0
+    # El comando que se ejecutará al hacer deploy de la app.
+    command: python3 ./banco-cliente/bancoCliente/manage.py runserver 0.0.0.0:8100
+    # Cuando hayan cambios en la carpeta actual, a donde mandarlos dentro del contenedor.
+    volumes:
+      - .:/banco-cliente
+    # El puerto XX dentro del host se mapeará YY en el contenedor (XX:YY) y viceversa
+    ports:
+      - "8100:8100"

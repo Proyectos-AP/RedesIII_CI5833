@@ -1,4 +1,4 @@
-# Dockerfile para el contenedor del vendedor.
+# Dockerfile para el contenedor del banco del cliente.
 #
 # Este archivo contiene las directivas necesarias para crear una aplicación
 # de Django que sirve de página web para el servidor.
@@ -12,20 +12,20 @@ FROM python:3.6
 ENV PYTHONUNBUFFERED 1
 
 # Crear la carpeta actual actual en el contenedor.
-RUN mkdir /vendedor
+RUN mkdir /banco-cliente
 
 # Setear la carpeta principal del contenedor.
-WORKDIR /vendedor
+WORKDIR /banco-cliente
 
 # Añadir el archivo de requerimientos e instalarlos
-COPY requirements.txt /vendedor/
+COPY requirements.txt /banco-cliente/
 RUN pip install -r requirements.txt
 
 # Añadir el contenido de esta carpeta en el contenedor.
-COPY . /vendedor/
+COPY . /banco-cliente/
 
 # Correr los comandos de migraciones
-RUN python3 /vendedor/ecommerce/manage.py makemigrations
-RUN python3 /vendedor/ecommerce/manage.py migrate
+RUN python3 /banco-cliente/bancoCliente/manage.py makemigrations
+RUN python3 /banco-cliente/bancoCliente/manage.py migrate
 
-# CMD ["python3", "./vendedor/ecommerce/manage.py runserver 0.0.0.0:8000"]
+# CMD ["python3", "./banco-cliente/bancoCliente/manage.py runserver 0.0.0.0:8100"]
