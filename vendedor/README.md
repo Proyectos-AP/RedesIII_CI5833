@@ -29,16 +29,7 @@ las distintas aplicaciones, como NGINX, Bases de datos, Django y más.
 ``` bash
   pip install -r requirements.txt
 ```
-4. Agregar como variable de ambiente el valor de la llave secreta para usar el captcha de Google. Para ello, abrir el archivo ~/.bashrc y agregar la siguiente línea
-``` bash
-  export CAPTCHA_SECRET_KEY=<clave_secreta>
-```
-  donde *clave_secreta* se encuentra en la carpeta Drive del proyecto.
-
-5. Actualizar las variables de ambiente del sistema
-``` bash
-  source ~/.bashrc
-```
+4. Agrear el archivo de configuración llamado `config.json` dentro de `ecommerce/private/`. Éste se encuentra en la carpeta Drive del proyecto.
 
 # Ejecución
 
