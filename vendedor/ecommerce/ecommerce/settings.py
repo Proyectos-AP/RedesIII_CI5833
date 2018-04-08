@@ -11,16 +11,21 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 import os
+import json
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+print(BASE_DIR)
+with open(os.path.join(BASE_DIR,"ecommerce/private/config.json") ,"r") as config_file:
+    config = json.load(fp=config_file)
+# config = {'DJANGO_SECRET_KEY': 400, 'CAPTCHA_SECRET_KEY': 300}
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '2-c7#=#-x*_$*h)328p=&e5x^0z=p2wq644(7y7kex$w#ml*ld'
+SECRET_KEY = config['DJANGO_SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -121,7 +126,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-CAPTCHA_SECRET_KEY = os.environ.get('CAPTCHA_SECRET_KEY')
+CAPTCHA_SECRET_KEY = config['CAPTCHA_SECRET_KEY']
 
 CACHES = {
     'default': {
