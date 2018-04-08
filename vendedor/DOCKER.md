@@ -33,5 +33,5 @@ Al estar trabajando con Django y Docker, todos los cambios a los que Django
 les pueda aplicar un Hot Reload se verán automáticamente sin tener que volver a hacer Build.
 
 Sin embargo, cambios que involucren tumbar el servidor de desarrollo, tendrán
-que volverse a construir para que sean visibles. Un ejemplo de este tipo de cambios
+que volverse a construir para que sean visibles (Ejecución). Un ejemplo de este tipo de cambios
 es cuando se modifica el modelo de la BD.

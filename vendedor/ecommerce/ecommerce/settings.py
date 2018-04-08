@@ -15,11 +15,9 @@ import json
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-print(BASE_DIR)
+
 with open(os.path.join(BASE_DIR,"ecommerce/private/config.json") ,"r") as config_file:
     config = json.load(fp=config_file)
-# config = {'DJANGO_SECRET_KEY': 400, 'CAPTCHA_SECRET_KEY': 300}
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
