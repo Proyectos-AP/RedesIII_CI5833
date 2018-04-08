@@ -1,6 +1,19 @@
 # Aplicación web del vendedor
 
-En este directorio se define la aplicación web correspondiente al sitio de comercio del vendedor. 
+En este directorio se define la aplicación web correspondiente al sitio de comercio del vendedor.
+
+## Docker
+La aplicación está dentro de un contenedor de Docker y se ejecuta siguiendo
+las instrucciones de `Dockerfile` y `docker-compose.yml`.
+
+`Dockerfile` dice cuál es la imagen que se tomará, cuáles son las variables de
+ambiente y los comandos necesarios para configurar la imagen.
+
+`docker-compose.yml` expone la aplicación como un servicio, donde se configuran
+las distintas aplicaciones, como NGINX, Bases de datos, Django y más.
+
+### Instalación
+
 
 # Instalación
 
@@ -16,8 +29,7 @@ En este directorio se define la aplicación web correspondiente al sitio de come
 ``` bash
   pip install -r requirements.txt
 ```
-4. Agregar como variable de ambiente el valor de la llave secreta para usar el captcha de Google. Para ello, abrir el archivo 
-~/.bashrc y agregar la siguiente línea
+4. Agregar como variable de ambiente el valor de la llave secreta para usar el captcha de Google. Para ello, abrir el archivo ~/.bashrc y agregar la siguiente línea
 ``` bash
   export CAPTCHA_SECRET_KEY=<clave_secreta>
 ```

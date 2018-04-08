@@ -1,0 +1,30 @@
+# docker-composer para el contenedor del vendedor.
+#
+# Este archivo contiene las directivas necesarias para crear un servicio web
+# constituido por una aplicación en Django y con servicio NGINX (próximamente)
+#
+# Autores: Fernando Pérez, Alejandra Cordero, Pablo Maldonado
+
+# Versión del archivo de docker-composer
+version: '3'
+
+# Definición de los servicios que se expondrán.
+services:
+  # Como se usa SQLite, no es necesario establecer un servicio db.
+
+  # El servicio 'web' es quien contendrá la aplicación en Django y quien será
+  # expuesta.
+  web:
+    # Para exponer la aplicación debe hacerse un build según el 'dockerfile'
+    # Aquí se dice en cuál carpeta está el dockerfile.
+    build: .
+    # Dice que imagen de docker se utilizará para hacer el build.
+    # image: fernandobperezm/proyecto-redes3-vendedor:1.0
+    # El comando que se ejecutará al hacer deploy de la app.
+    command: python3 ecommerce/manage.py runserver 0.0.0.0:8000
+    # Cuando hayan cambios en la carpeta actual, a donde mandarlos dentro del contenedor.
+    volumes:
+      - .:/vendedor
+    # El puerto XX dentro del host se mapeará YY en el contenedor (XX:YY) y viceversa
+    ports:
+      - "8000:8000"
