@@ -4,3 +4,4 @@ ecommerce/sales/__pycache__/
 ecommerce/sales/migrations/
 ecommerce/db.sqlite3
 ecommerce/ecommerce/secret_captcha.txt
+ecommerce/ecommerce/private/config.json
