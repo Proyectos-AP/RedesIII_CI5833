@@ -28,6 +28,8 @@ services:
     # El puerto XX dentro del host se mapeará YY en el contenedor (XX:YY) y viceversa
     ports:
       - "8000:8000"
+    # Que archivo debe ejecutarse antes de ejecutar command:
+    entrypoint: /entrypoint.sh
 
   # El servicio 'vendedor_web' es quien contendrá la aplicación en Django y quien será
   # expuesta.
@@ -45,3 +47,5 @@ services:
     # El puerto XX dentro del host se mapeará YY en el contenedor (XX:YY) y viceversa
     ports:
       - "8100:8100"
+    # Que archivo debe ejecutarse antes de ejecutar command:
+    entrypoint: /entrypoint.sh

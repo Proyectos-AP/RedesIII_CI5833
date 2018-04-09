@@ -24,8 +24,12 @@ RUN pip install -r requirements.txt
 # Añadir el contenido de esta carpeta en el contenedor.
 COPY . /vendedor/
 
+# Copiar y cambiar los permisos el archivo que se encarga de las migraciones.
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
 # Correr los comandos de migraciones
-RUN python3 /vendedor/ecommerce/manage.py makemigrations
-RUN python3 /vendedor/ecommerce/manage.py migrate
+# RUN python3 /vendedor/ecommerce/manage.py makemigrations
+# RUN python3 /vendedor/ecommerce/manage.py migrate
 
 # CMD ["python3", "./vendedor/ecommerce/manage.py runserver 0.0.0.0:8000"]
