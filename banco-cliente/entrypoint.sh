@@ -8,6 +8,6 @@
 # Ref: https://stackoverflow.com/a/41436850
 #
 # Autores: Fernando Pérez, Alejandra Cordero y Pablo Maldonado.
-python ./banco-cliente/bancoCliente/manage.py makemigrations
-python ./banco-cliente/bancoCliente/manage.py migrate
+python ./bancoCliente/manage.py makemigrations
+python ./bancoCliente/manage.py migrate
 exec "$@"

@@ -8,6 +8,6 @@
 # Ref: https://stackoverflow.com/a/41436850
 #
 # Autores: Fernando Pérez, Alejandra Cordero y Pablo Maldonado.
-python ./vendedor/ecommerce/manage.py makemigrations
-python ./vendedor/ecommerce/manage.py migrate
+python ./ecommerce/manage.py makemigrations
+python ./ecommerce/manage.py migrate
 exec "$@"
