@@ -1,15 +1,17 @@
-env/
-
 vendedor/ecommerce/ecommerce/__pycache__/
 vendedor/ecommerce/sales/__pycache__/
 vendedor/ecommerce/sales/migrations/__pycache__/
 vendedor/ecommerce/db.sqlite3
 vendedor/ecommerce/ecommerce/secret_captcha.txt
 vendedor/ecommerce/ecommerce/private/config.json
+vendedor/env
 
 banco-cliente/bancoCliente/bancoCliente/__pycache__/
 banco-cliente/bancoCliente/bancoCliente/migrations/__pycache__/
 banco-cliente/bancoCliente/db.sqlite3
+banco-cliente/env
+
+banco-vendedor/env
 
 # Python Gitignore
 # Byte-compiled / optimized / DLL files
