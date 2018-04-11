@@ -1,15 +1,13 @@
 from django.db import models
-
-# Create your models here.
-# class Client(models.Model):
-#     username = models.CharField(max_length=200)
-#     password = models.CharField(max_length=200)
-#     logged_in = models.BooleanField(default=False)
-#     login_try = models.IntegerField(default=0)
-#     blocked = models.BooleanField(default=False)
-
+from django.contrib.auth.models import User
 
 class Product(models.Model):
     description = models.CharField(max_length=200)
     amount = models.DecimalField(max_digits=20,decimal_places=2)
     vendor = models.CharField(max_length=10,default="")
+
+# La interfaz solo permite comprar un producto a la vez.
+class Receipt(models.Model):
+    client = models.ForeignKey(User, on_delete=models.CASCADE, db_index=True)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, db_index=True)
+    # amount_payed = models.DecimalField(max_digits=20,decimal_places=2)

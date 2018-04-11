@@ -7,11 +7,11 @@
   <body>
     <h1>En este sitio encontrará los productos disponibles</h1>
 
-    {% if products_list %}
+    {% if products_list|length > 0 %}
         <ul>
         {% for product in products_list %}
-            <li>{{product.description}} - {{product.amount}} - 
-            <form target="_blank" action="{{url}}" method="post">
+            <li>{{product.description}} - {{product.amount}} -
+            <form target="_blank" action="{{url}}" method="get">
               {% csrf_token %}
               <input type="hidden" name="price" value="{{product.amount}}">
               <input type="hidden" name="vendor" value="{{product.vendor}}">

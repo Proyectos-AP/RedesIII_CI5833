@@ -14,7 +14,7 @@ URL_BANCO_CLIENTE = "http://127.0.0.1:8080/"
 # Create your views here.
 def index(request):
 
-    p = Product(description="Audifonos",amount=15,vendor="R1234")
+    p = Product(description="Audifonos",amount=15550.50,vendor="R1234")
     p.save()
     return render(request, 'sales/index.html')
 
