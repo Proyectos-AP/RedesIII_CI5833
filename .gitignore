@@ -12,6 +12,7 @@ banco-cliente/bancoCliente/db.sqlite3
 banco-cliente/env
 
 banco-vendedor/env
+banco-vendedor/db-bancoVendedor.sqlite
 
 # Python Gitignore
 # Byte-compiled / optimized / DLL files
