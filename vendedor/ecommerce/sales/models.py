@@ -12,3 +12,4 @@ from django.db import models
 class Product(models.Model):
     description = models.CharField(max_length=200)
     amount = models.DecimalField(max_digits=20,decimal_places=2)
+    vendor = models.CharField(max_length=10,default="")
