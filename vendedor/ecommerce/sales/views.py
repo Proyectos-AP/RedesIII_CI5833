@@ -10,9 +10,12 @@ from sales.models import Product
 import requests
 import json
 
+URL_BANCO_CLIENTE = "http://127.0.0.1:8080/"
 # Create your views here.
-
 def index(request):
+
+    p = Product(description="Audifonos",amount=15,vendor="R1234")
+    p.save()
     return render(request, 'sales/index.html')
 
 def register(request):
@@ -53,7 +56,13 @@ def login_view(request):
             if user is not None:
                 login(request, user)
                 # Redirect to sales platform
-                return render(request,'sales/platform.html')
+                products_list = Product.objects.all()
+                print("Productos", products_list)
+                context = {
+                    'products_list': products_list,
+                    'url': URL_BANCO_CLIENTE
+                    }
+                return render(request,'sales/platform.html',context)
             else:
                 return render(request,'sales/login.html')
         else:
@@ -75,8 +84,10 @@ def platform(request):
         print("Process a transaction")
     else:
         products_list = Product.objects.all()
+        print("Productos", products_list)
         context = {
             'products_list': products_list,
+            'url': URL_BANCO_CLIENTE
             }
         return render(request,'sales/platform.html',context)
 

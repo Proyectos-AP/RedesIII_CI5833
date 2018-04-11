@@ -10,7 +10,14 @@
     {% if products_list %}
         <ul>
         {% for product in products_list %}
-            <li>{{product.description}} - {{product.amount}} - <a href="#">Comprar</a> </li>
+            <li>{{product.description}} - {{product.amount}} - 
+            <form target="_blank" action="{{url}}" method="post">
+              {% csrf_token %}
+              <input type="hidden" name="price" value="{{product.amount}}">
+              <input type="hidden" name="vendor" value="{{product.vendor}}">
+              <input type="submit" value="Comprar">
+            </form>
+            <a href="http://127.0.0.1:8080/" target="_blank">Comprar</a> </li>
         {% endfor %}
         </ul>
     {% else %}
