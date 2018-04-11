@@ -14,7 +14,7 @@ ENV PYTHONUNBUFFERED 1
 # Crear la carpeta actual actual en el contenedor.
 RUN mkdir /vendedor
 
-# Setear la carpeta principal del contenedor.
+# Setear la carpeta principal del contenedor. (hacer cd hasta acá.)
 WORKDIR /vendedor
 
 # Añadir el archivo de requerimientos e instalarlos
@@ -28,8 +28,13 @@ COPY . /vendedor/
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
+# Movernos a la carpeta donde hacemos python manage.py
+# WORKDIR /vendedor/ecommerce
+
 # Correr los comandos de migraciones
 # RUN python3 /vendedor/ecommerce/manage.py makemigrations
 # RUN python3 /vendedor/ecommerce/manage.py migrate
-
-# CMD ["python3", "./vendedor/ecommerce/manage.py runserver 0.0.0.0:8000"]
+EXPOSE 5090
+# CMD ["gunicorn", "-b", "0.0.0.0:5090","ecommerce.wsgi:application"]
+# CMD ["python", "manage.py", "runserver", "0.0.0.0:5090"]
+CMD ["gunicorn", "-c", "config/gunicorn/conf.py", "--bind", ":5090", "--chdir", "ecommerce", "ecommerce.wsgi:application"]
