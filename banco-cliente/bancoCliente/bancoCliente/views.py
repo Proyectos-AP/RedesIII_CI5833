@@ -17,44 +17,44 @@ PUERTO_BANCO_VENDEDOR = 8082
 
 def comunicacion_banco_vendedor(idVendedor,idComprador,monto):
 
-	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-	ssl_sock = ssl.wrap_socket(s,cert_reqs=ssl.CERT_REQUIRED, ca_certs='/home/prmm95/Documents/RedesIII_CI5833/banco-vendedor/certificados/server.crt')
-	ssl_sock.connect(('www.r3bancovendedor.tk', 8082))
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    ssl_sock = ssl.wrap_socket(s,cert_reqs=ssl.CERT_REQUIRED, ca_certs='/home/prmm95/Documents/RedesIII_CI5833/banco-vendedor/certificados/server.crt')
+    ssl_sock.connect(('www.r3bancovendedor.tk', 8082))
 
-	# Se contruye el mensaje que se va a enviar al banco del vendedor
-	paquete = {"id": 10, "idVendedor":idVendedor,
-				"idComprador":idComprador, "monto": monto,
-				"mensaje": "Batch al banco del vendedor"}
+    # Se contruye el mensaje que se va a enviar al banco del vendedor
+    paquete = {"id": 10, "idVendedor":idVendedor,
+                "idComprador":idComprador, "monto": monto,
+                "mensaje": "Batch al banco del vendedor"}
 
-	print(paquete)
-	ssl_sock.write(pickle.dumps(paquete))
-	# Se envia el mensaje
-	data = ssl_sock.recv(8192)
+    print(paquete)
+    ssl_sock.write(pickle.dumps(paquete))
+    # Se envia el mensaje
+    data = ssl_sock.recv(8192)
 
-	# Se recibe el mensaje de respuesta del servidor
-	data = pickle.loads(data)
-	print("El mensaje es:",data["mensaje"])
+    # Se recibe el mensaje de respuesta del servidor
+    data = pickle.loads(data)
+    print("El mensaje es:",data["mensaje"])
 
-	ssl_sock.close()
+    ssl_sock.close()
 
-	if (data["id"] == 200):
-		return True
-	else:
-		return False
+    if (data["id"] == 200):
+        return True
+    else:
+        return False
 
 def encriptar(mensaje):
 
-	algo = "sha512".encode('utf-8')
+    algo = "sha512".encode('utf-8')
 
-	mensaje = str(mensaje).encode('utf-8')
+    mensaje = str(mensaje).encode('utf-8')
 
-	# Se crea el bit de salt
-	salt = crypt.mksalt(crypt.METHOD_SHA512).split("$")[-1].encode('utf-8')
+    # Se crea el bit de salt
+    salt = crypt.mksalt(crypt.METHOD_SHA512).split("$")[-1].encode('utf-8')
 
-	# Se encripta el mensaje
-	hash_object = hashlib.sha512(salt+mensaje)
+    # Se encripta el mensaje
+    hash_object = hashlib.sha512(salt+mensaje)
 
-	return '%s$%s$%s' % (algo.decode('utf-8'), salt.decode('utf-8'), hash_object.hexdigest())
+    return '%s$%s$%s' % (algo.decode('utf-8'), salt.decode('utf-8'), hash_object.hexdigest())
 
 def comparador(raw_password, enc_password):
 
@@ -65,123 +65,125 @@ def comparador(raw_password, enc_password):
 
 def verificarSaldo(cuenta,monto):
 
-	if (cuenta.saldo>=monto):
+    if (cuenta.saldo>=monto):
 
-		cuenta.saldo = cuenta.saldo - monto
-		cuenta.save()
-		return True
+        cuenta.saldo = cuenta.saldo - monto
+        cuenta.save()
+        return True
 
-	return False
+    return False
 
 # Se muestra el index de la pagina.
 def index(request):
+    respuesta = request.POST
+    print("Esto es lo que paso el vendedor",respuesta)
     return render(request, 'bancoCliente/index.html')
 
 
 # Se muestran las preguntas secretas.
 def preguntaSecreta(request):
 
-	respuesta = request.POST
+    respuesta = request.POST
 
-	# Se busca la cuenta dentro de la base de datos
-	cuenta = Cuentas.objects.filter(ci=respuesta['ci'])
+    # Se busca la cuenta dentro de la base de datos
+    cuenta = Cuentas.objects.filter(ci=respuesta['ci'])
 
-	# Se verifica el Captcha
-	# session = requests.Session()
-	# params = {
-	#     'secret': settings.CAPTCHA_SECRET_KEY,
-	#     'response': request.POST['g-recaptcha-response'],
-	# }
+    # Se verifica el Captcha
+    # session = requests.Session()
+    # params = {
+    #     'secret': settings.CAPTCHA_SECRET_KEY,
+    #     'response': request.POST['g-recaptcha-response'],
+    # }
 
-	#response = session.post("https://www.google.com/recaptcha/api/siteverify", data=params)
-	#json_data = json.loads(response.text)
+    #response = session.post("https://www.google.com/recaptcha/api/siteverify", data=params)
+    #json_data = json.loads(response.text)
 
-	#print("Este es el json de respuesta: ",json_data)
+    #print("Este es el json de respuesta: ",json_data)
 
-	# Si no existe la cuenta se lanza un mensaje de error
-	if (len(cuenta)<=0):
-		print("Mostrar mensaje de error")
-		return render(request, 'bancoCliente/index.html',
-					{'mensaje':"No existe una cuenta asociada a dicha cédula."})
-	
-	#elif (not(json_data['success'])):
-	#	# Si el Captcha no paso la prueba, se lanza un mensaje de error.
-	#	return render(request, 'bancoCliente/index.html',
-	#				{'mensaje':"Problemas con el Captcha."})
+    # Si no existe la cuenta se lanza un mensaje de error
+    if (len(cuenta)<=0):
+        print("Mostrar mensaje de error")
+        return render(request, 'bancoCliente/index.html',
+                    {'mensaje':"No existe una cuenta asociada a dicha cédula."})
+    
+    #elif (not(json_data['success'])):
+    #    # Si el Captcha no paso la prueba, se lanza un mensaje de error.
+    #    return render(request, 'bancoCliente/index.html',
+    #                {'mensaje':"Problemas con el Captcha."})
 
-	else:
-		cuenta    = cuenta[0]
+    else:
+        cuenta    = cuenta[0]
 
-		# Se verifica la tarjeta de crédito
-		if (comparador(respuesta['tdc'],cuenta.tdc_number)):
+        # Se verifica la tarjeta de crédito
+        if (comparador(respuesta['tdc'],cuenta.tdc_number)):
 
-			preguntas = Preguntas.objects.filter(cuenta=cuenta)
-			preguntas = preguntas[0]
+            preguntas = Preguntas.objects.filter(cuenta=cuenta)
+            preguntas = preguntas[0]
 
-			# Se muestra la pregunta secreta
-			return render(request, 
-						'bancoCliente/preguntas.html',
-						{'pregunta':preguntas.pregunta,
-						'idCuenta' :cuenta.id})
+            # Se muestra la pregunta secreta
+            return render(request, 
+                        'bancoCliente/preguntas.html',
+                        {'pregunta':preguntas.pregunta,
+                        'idCuenta' :cuenta.id})
 
-		return render(request, 'bancoCliente/index.html',
-					{'mensaje':"El número de la tarjeta de crédito es incorrecto."})
+        return render(request, 'bancoCliente/index.html',
+                    {'mensaje':"El número de la tarjeta de crédito es incorrecto."})
 
 def confirmarPregunta(request):
 
-	respuesta = request.POST
-	cuenta = Cuentas.objects.get(pk=respuesta['id_cuenta'])
+    respuesta = request.POST
+    cuenta = Cuentas.objects.get(pk=respuesta['id_cuenta'])
 
-	if (not(cuenta)):
-		print("Mostrar mensaje de error")
-		return render(request, 'bancoCliente/index.html',
-					{'mensaje':"El número de la tarjeta de crédito es incorrecto."})
-
-
-	preguntas = Preguntas.objects.filter(cuenta=cuenta)
-	preguntas = preguntas[0]
-	print(comparador(respuesta['respuesta'],preguntas.respuesta))
-
-	if (comparador(respuesta['respuesta'],preguntas.respuesta)):
-		# Se verifica si el comprador tiene el dinero necesario para
-		# realizar la compra.
-		if (verificarSaldo(cuenta,MONTO)):
-
-			print("Cuenta comprador: ",cuenta.ci)
-			# Aquí se hace la comunicación con el banco del vendedor
-			exito = comunicacion_banco_vendedor(ID_VENDEDOR,cuenta.ci,MONTO)
-
-			# Caso en el que la transaccion con el vendedor se hizo de manera
-			# exitosa
-			if (exito):
-
-				# Se modifica el saldo del comprador
-				cuenta.monto = cuenta.saldo - MONTO
-				cuenta.save()
-
-				# Se muestra un mensaje de exito
-				return render(request, 'bancoCliente/notificacion.html',
-							{'mensaje':"Se procesó el pago."})
-
-			else:
-
-				# Caso en el que la transaccion con el vendedor no se hizo de manera
-				# exitosa
-				return render(request, 'bancoCliente/notificacion.html',
-							{'mensaje':"Hubo problemas en la transacción."})
+    if (not(cuenta)):
+        print("Mostrar mensaje de error")
+        return render(request, 'bancoCliente/index.html',
+                    {'mensaje':"El número de la tarjeta de crédito es incorrecto."})
 
 
-		else:
-			# Caso en el que el comprador no tiene saldo suficiente para
-			# realizar la compra.
-			return render(request, 'bancoCliente/notificacion.html',
-						{'mensaje':"Su saldo no es suficiente."})
+    preguntas = Preguntas.objects.filter(cuenta=cuenta)
+    preguntas = preguntas[0]
+    print(comparador(respuesta['respuesta'],preguntas.respuesta))
 
-	else:
-		# Caso en el que la respuesta de seguridad se contestó de manera
-		# incorrecta
-		return render(request, 'bancoCliente/notificacion.html',
-					{'mensaje':"La respuesta a la pregunta secreta es incorrecta."})
+    if (comparador(respuesta['respuesta'],preguntas.respuesta)):
+        # Se verifica si el comprador tiene el dinero necesario para
+        # realizar la compra.
+        if (verificarSaldo(cuenta,MONTO)):
+
+            print("Cuenta comprador: ",cuenta.ci)
+            # Aquí se hace la comunicación con el banco del vendedor
+            exito = comunicacion_banco_vendedor(ID_VENDEDOR,cuenta.ci,MONTO)
+
+            # Caso en el que la transaccion con el vendedor se hizo de manera
+            # exitosa
+            if (exito):
+
+                # Se modifica el saldo del comprador
+                cuenta.monto = cuenta.saldo - MONTO
+                cuenta.save()
+
+                # Se muestra un mensaje de exito
+                return render(request, 'bancoCliente/notificacion.html',
+                            {'mensaje':"Se procesó el pago."})
+
+            else:
+
+                # Caso en el que la transaccion con el vendedor no se hizo de manera
+                # exitosa
+                return render(request, 'bancoCliente/notificacion.html',
+                            {'mensaje':"Hubo problemas en la transacción."})
+
+
+        else:
+            # Caso en el que el comprador no tiene saldo suficiente para
+            # realizar la compra.
+            return render(request, 'bancoCliente/notificacion.html',
+                        {'mensaje':"Su saldo no es suficiente."})
+
+    else:
+        # Caso en el que la respuesta de seguridad se contestó de manera
+        # incorrecta
+        return render(request, 'bancoCliente/notificacion.html',
+                    {'mensaje':"La respuesta a la pregunta secreta es incorrecta."})
 
 # Se muestra el form para crear una nueva cuenta.
 def crearCuenta(request):
@@ -203,16 +205,16 @@ def procesarDatosCuenta(request):
 
     print(comparador(respuesta['tdc'], tdc))
 
-    cuenta   = Cuentas(	ci                = respuesta['ci'],
-    					tdc_number        = tdc,
-    					secret_number     = numero_secreto,
-    					fecha_vencimiento = fecha_vencimiento,
-    					saldo             = 1000000 )
+    cuenta   = Cuentas(    ci                = respuesta['ci'],
+                        tdc_number        = tdc,
+                        secret_number     = numero_secreto,
+                        fecha_vencimiento = fecha_vencimiento,
+                        saldo             = 1000000 )
 
     cuenta.save()
     pregunta = Preguntas(pregunta=respuesta['pregunta_seguridad'],
-    					respuesta=respuesta_seguridad,
-    					cuenta = cuenta)
+                        respuesta=respuesta_seguridad,
+                        cuenta = cuenta)
 
     # Se almacena la información de la base de datos
     pregunta.save()
