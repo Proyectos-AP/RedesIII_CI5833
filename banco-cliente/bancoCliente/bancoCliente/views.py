@@ -4,6 +4,7 @@ from django.conf import settings
 from django.shortcuts import render
 from django.template import loader
 from bancoCliente.models import *
+from decimal import Decimal
 import crypt
 import hashlib
 import requests
@@ -14,12 +15,13 @@ import socket, ssl
 MONTO = 1000
 ID_VENDEDOR = "R1234"
 PUERTO_BANCO_VENDEDOR = 8082
+URL_BANCO_VENDEDOR    = 'www.r3bancovendedor.tk'
 
 def comunicacion_banco_vendedor(idVendedor,idComprador,monto):
 
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     ssl_sock = ssl.wrap_socket(s,cert_reqs=ssl.CERT_REQUIRED, ca_certs='/home/prmm95/Documents/RedesIII_CI5833/banco-vendedor/certificados/server.crt')
-    ssl_sock.connect(('www.r3bancovendedor.tk', 8082))
+    ssl_sock.connect((URL_BANCO_VENDEDOR, PUERTO_BANCO_VENDEDOR))
 
     # Se contruye el mensaje que se va a enviar al banco del vendedor
     paquete = {"id": 10, "idVendedor":idVendedor,
@@ -76,7 +78,12 @@ def verificarSaldo(cuenta,monto):
 # Se muestra el index de la pagina.
 def index(request):
     respuesta = request.POST
+    global ID_VENDEDOR 
+    global MONTO
+    ID_VENDEDOR = respuesta['vendor']
+    MONTO       = Decimal(respuesta['price'].strip(' "'))
     print("Esto es lo que paso el vendedor",respuesta)
+
     return render(request, 'bancoCliente/index.html')
 
 
@@ -142,14 +149,13 @@ def confirmarPregunta(request):
 
     preguntas = Preguntas.objects.filter(cuenta=cuenta)
     preguntas = preguntas[0]
-    print(comparador(respuesta['respuesta'],preguntas.respuesta))
 
     if (comparador(respuesta['respuesta'],preguntas.respuesta)):
         # Se verifica si el comprador tiene el dinero necesario para
         # realizar la compra.
         if (verificarSaldo(cuenta,MONTO)):
 
-            print("Cuenta comprador: ",cuenta.ci)
+            print("Cuenta comprador: ",ID_VENDEDOR,MONTO)
             # Aquí se hace la comunicación con el banco del vendedor
             exito = comunicacion_banco_vendedor(ID_VENDEDOR,cuenta.ci,MONTO)
 
