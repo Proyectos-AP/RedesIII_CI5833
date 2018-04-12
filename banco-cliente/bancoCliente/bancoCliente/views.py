@@ -22,7 +22,7 @@ ID_PRODUCTO = ""
 def comunicacion_banco_vendedor(idVendedor,idComprador,monto,idProducto):
 
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    ssl_sock = ssl.wrap_socket(s,cert_reqs=ssl.CERT_REQUIRED, ca_certs='/home/prmm95/Documents/RedesIII_CI5833/banco-vendedor/certificados/server.crt')
+    ssl_sock = ssl.wrap_socket(s,cert_reqs=ssl.CERT_REQUIRED, ca_certs=settings.PATH_CERTIFICATE)
     ssl_sock.connect((settings.URL_BANCO_VENDEDOR, int(settings.PUERTO_BANCO_VENDEDOR) ))
 
     print("Se esta realizando la comunicación con el banco del vendedor...")
