@@ -3,7 +3,6 @@ vendedor/ecommerce/sales/__pycache__/
 vendedor/ecommerce/sales/migrations/__pycache__/
 vendedor/ecommerce/db.sqlite3
 vendedor/ecommerce/ecommerce/secret_captcha.txt
-vendedor/ecommerce/ecommerce/private/config.json
 vendedor/env
 
 banco-cliente/bancoCliente/bancoCliente/__pycache__/
