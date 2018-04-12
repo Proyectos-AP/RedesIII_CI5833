@@ -7,11 +7,10 @@
   <body>
     <h1>En este sitio encontrará los productos disponibles</h1>
 
-    <button type="button" onclick="alert('Hello world!')">Listar mis facturas</button>
-    {% if products_list %}
+    {% if products_list|length > 0 %}
         <ul>
         {% for product in products_list %}
-            <li>{{product.description}} - {{product.amount}} - 
+            <li>{{product.description}} - {{product.amount}} -
             <form target="_blank" action="{{url}}" method="post">
               {% csrf_token %}
               <input type="hidden" name="price" value="{{product.amount}}">

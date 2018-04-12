@@ -2,7 +2,7 @@ import socket
 import pickle
 import ssl
 import json
-import bdBancoVendedor 
+import bdBancoVendedor
 from pony.orm import *
 from socket import AF_INET, SOCK_STREAM, SO_REUSEADDR, SOL_SOCKET, SHUT_RDWR
 
@@ -14,7 +14,7 @@ CERTFILE = './certificados/server.crt'
 @db_session
 def check_message(mensaje):
 
-    # Se verifica si existe la cuenta del vendedor en la base 
+    # Se verifica si existe la cuenta del vendedor en la base
     # de datos
     cuenta_vendedor = select(c for c in bdBancoVendedor.Cuenta if c.idVendedor == mensaje["idVendedor"])[:]
 
@@ -64,4 +64,5 @@ def echo_server(address):
             print('Error: {0}'.format(e))
             c.close()
 
-echo_server((socket.gethostbyname('www.r3bancovendedor.tk'), 8082))
+# echo_server((socket.gethostbyname('www.r3bancovendedor.tk'), 8082))
+echo_server((socket.gethostbyname('localhost'), 8082))
