@@ -9,7 +9,7 @@ from socket import AF_INET, SOCK_STREAM, SO_REUSEADDR, SOL_SOCKET, SHUT_RDWR
 
 KEYFILE = './certificados/server.key'
 CERTFILE = './certificados/server.crt'
-URL_VENDEDOR = 'http://127.0.0.1:8000/crearFactura/'
+URL_VENDEDOR = 'https://a4.ac.labf.usb.ve/crearFactura/'
 
 
 

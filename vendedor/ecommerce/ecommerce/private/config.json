@@ -1,5 +1,5 @@
 {
 	"DJANGO_SECRET_KEY": "2-c7#=#-x*_$*h)328p=&e5x^0z=p2wq644(7y7kex$w#ml*ld",
 	"CAPTCHA_SECRET_KEY": "6LcuEE8UAAAAAA8ESFpt1KYtEiBLHR5RA87qosgI",
-	"URL_BANCO_CLIENTE":  "http://127.0.0.1:8080/"
+	"URL_BANCO_CLIENTE":  "https://a5.ac.labf.usb.ve/"
 }
