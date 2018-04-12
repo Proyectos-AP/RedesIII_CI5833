@@ -7,8 +7,8 @@ import bdBancoVendedor
 from pony.orm import *
 from socket import AF_INET, SOCK_STREAM, SO_REUSEADDR, SOL_SOCKET, SHUT_RDWR
 
-KEYFILE = './certificados/server.key'
-CERTFILE = './certificados/server.crt'
+KEYFILE = '/etc/nginx/certificados/banco-vendedor.key'
+CERTFILE = '/etc/nginx/certificados/banco-vendedor.crt'
 URL_VENDEDOR = 'https://a4.ac.labf.usb.ve/crearFactura/'
 
 
