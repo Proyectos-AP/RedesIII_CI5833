@@ -29,7 +29,6 @@ pip install -r requirements.txt
 # Crear la BD de sqlite.
 python bdBancoVendedor.py
 python add.py
-cd ..
 
 # Copiar la config de Nginx.
 # cd ../nginx
@@ -39,5 +38,4 @@ cd ..
 # service nginx start
 
 # Gunicorn para servir la app.
-cd ../banco-cliente/bancoCliente
 python server.py
