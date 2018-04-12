@@ -96,16 +96,16 @@ def preguntaSecreta(request):
     cuenta = Cuentas.objects.filter(ci=respuesta['ci'])
 
     # Se verifica el Captcha
-    # session = requests.Session()
-    # params = {
-    #     'secret': settings.CAPTCHA_SECRET_KEY,
-    #     'response': request.POST['g-recaptcha-response'],
-    # }
+    session = requests.Session()
+    params = {
+        'secret': settings.CAPTCHA_SECRET_KEY,
+        'response': request.POST['g-recaptcha-response'],
+    }
 
-    #response = session.post("https://www.google.com/recaptcha/api/siteverify", data=params)
-    #json_data = json.loads(response.text)
+    response = session.post("https://www.google.com/recaptcha/api/siteverify", data=params)
+    json_data = json.loads(response.text)
 
-    #print("Este es el json de respuesta: ",json_data)
+    print("Este es el json de respuesta: ",json_data)
 
     # Si no existe la cuenta se lanza un mensaje de error
     if (len(cuenta)<=0):
@@ -113,10 +113,10 @@ def preguntaSecreta(request):
         return render(request, 'bancoCliente/index.html',
                     {'mensaje':"No existe una cuenta asociada a dicha cédula."})
     
-    #elif (not(json_data['success'])):
-    #    # Si el Captcha no paso la prueba, se lanza un mensaje de error.
-    #    return render(request, 'bancoCliente/index.html',
-    #                {'mensaje':"Problemas con el Captcha."})
+    elif (not(json_data['success'])):
+       # Si el Captcha no paso la prueba, se lanza un mensaje de error.
+       return render(request, 'bancoCliente/index.html',
+                   {'mensaje':"Problemas con el Captcha."})
 
     else:
         cuenta    = cuenta[0]
