@@ -4,6 +4,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
+from django.core.mail import EmailMessage
 from django.shortcuts import render
 from django.template import loader
 from sales.models import Product, Receipt
@@ -98,7 +99,6 @@ def logout_view(request):
     logout(request)
     return render(request,'sales/index.html')
 
-@login_required(login_url='/login/')
 def platform(request):
     if request.method == 'POST':
         # Process a transaction
@@ -127,6 +127,15 @@ def create_bill(request):
     producto = Product.objects.get(pk=respuesta['idProducto'])
     factura = Receipt(client=user,product=producto)
     factura.save()
+
+    body = "Usted ha adquirido el producto con descripción: "+\
+            producto.description+" . El monto a pagar fué: "+\
+            str(producto.amount)+" y el ID de la factura es: "+\
+            str(factura.id)
+    # Se envia un correo al usuario con su factura
+    email = EmailMessage('Factura de comercio', 
+                        body, to=['alejandra.corderogarcia21@gmail.com'])
+    email.send()
     
     return HttpResponse('200')
 

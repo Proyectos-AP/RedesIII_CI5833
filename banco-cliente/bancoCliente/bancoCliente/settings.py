@@ -29,8 +29,8 @@ ALLOWED_HOSTS = ['127.0.0.1','a2.ac.labf.usb.ve','a4.ac.labf.usb.ve',
                 'a5.ac.labf.usb.ve','a6.ac.labf.usb.ve']
 
 
-# Application definition
 
+# Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
