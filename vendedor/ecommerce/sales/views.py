@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.template import loader
-from sales.models import Product
+from sales.models import Product, Receipt
 from django.middleware.csrf import get_token
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
@@ -65,6 +65,7 @@ def login_view(request):
                 context = {
                     'products_list': products_list,
                     'url': URL_BANCO_CLIENTE,
+                    'username': username
                     }
                 return render(request,'sales/platform.html',context)
             else:
@@ -101,6 +102,15 @@ def locked(request):
 @csrf_exempt
 def create_bill(request):
     print("Se esta creando la factura")
+    print(request.POST)
+    respuesta = request.POST
+
+    # Se crea la factura del usuario
+    user    = User.objects.get(username=respuesta['idComprador'])
+    producto = Product.objects.get(pk=respuesta['idProducto'])
+    factura = Receipt(client=user,product=producto)
+    factura.save()
+    
     return HttpResponse('200')
 
 

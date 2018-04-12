@@ -13,12 +13,14 @@ import json
 import pickle 
 import socket, ssl
 
-MONTO = 1000
-ID_VENDEDOR = "R1234"
+MONTO = 0
+ID_VENDEDOR = ""
+COMPRADOR = ""
+ID_PRODUCTO = ""
 PUERTO_BANCO_VENDEDOR = 8082
 URL_BANCO_VENDEDOR    = 'www.r3bancovendedor.tk'
 
-def comunicacion_banco_vendedor(idVendedor,idComprador,monto):
+def comunicacion_banco_vendedor(idVendedor,idComprador,monto,idProducto):
 
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     ssl_sock = ssl.wrap_socket(s,cert_reqs=ssl.CERT_REQUIRED, ca_certs='/home/prmm95/Documents/RedesIII_CI5833/banco-vendedor/certificados/server.crt')
@@ -27,6 +29,7 @@ def comunicacion_banco_vendedor(idVendedor,idComprador,monto):
     # Se contruye el mensaje que se va a enviar al banco del vendedor
     paquete = {"id": 10, "idVendedor":idVendedor,
                 "idComprador":idComprador, "monto": monto,
+                "idProducto" : idProducto,
                 "mensaje": "Batch al banco del vendedor"}
 
     print(paquete)
@@ -85,8 +88,12 @@ def index(request):
     respuesta = request.POST
     global ID_VENDEDOR 
     global MONTO
+    global COMPRADOR
+    global ID_PRODUCTO
     ID_VENDEDOR = respuesta['vendor']
     MONTO       = Decimal(respuesta['price'].strip(' "'))
+    COMPRADOR   = respuesta['comprador']
+    ID_PRODUCTO = respuesta['idProducto']
     print("Esto es lo que paso el vendedor",respuesta)
 
     return render(request, 'bancoCliente/index.html')
@@ -164,7 +171,7 @@ def confirmarPregunta(request):
 
             print("Cuenta comprador: ",ID_VENDEDOR,MONTO)
             # Aquí se hace la comunicación con el banco del vendedor
-            exito = comunicacion_banco_vendedor(ID_VENDEDOR,cuenta.ci,MONTO)
+            exito = comunicacion_banco_vendedor(ID_VENDEDOR,COMPRADOR,MONTO,ID_PRODUCTO)
 
             # Caso en el que la transaccion con el vendedor se hizo de manera
             # exitosa
