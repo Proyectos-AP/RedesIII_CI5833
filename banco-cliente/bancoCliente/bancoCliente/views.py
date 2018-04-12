@@ -11,7 +11,7 @@ import crypt
 import hashlib
 import requests
 import json
-import pickle 
+import pickle
 import socket, ssl
 
 MONTO = 0
@@ -23,7 +23,7 @@ ID_PRODUCTO = ""
 def comunicacion_banco_vendedor(idVendedor,idComprador,monto,idProducto):
 
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    ssl_sock = ssl.wrap_socket(s,cert_reqs=ssl.CERT_REQUIRED, ca_certs=settings.PATH_CERTIFICATE)
+    ssl_sock = ssl.wrap_socket(s,cert_reqs=ssl.CERT_REQUIRED, ca_certs=settings.PATH_BANCO_VENDEDOR_CERTIFICATE)
     ssl_sock.connect((settings.URL_BANCO_VENDEDOR, int(settings.PUERTO_BANCO_VENDEDOR) ))
 
     print("Se esta realizando la comunicación con el banco del vendedor...")
@@ -74,7 +74,7 @@ def comparador(raw_password, enc_password):
 @csrf_exempt
 def index(request):
     respuesta = request.POST
-    global ID_VENDEDOR 
+    global ID_VENDEDOR
     global MONTO
     global COMPRADOR
     global ID_PRODUCTO
@@ -117,7 +117,7 @@ def preguntaSecreta(request):
         print("Mostrar mensaje de error")
         return render(request, 'bancoCliente/index.html',
                     {'mensaje':"No existe una cuenta asociada a dicha cédula."})
-    
+
     elif (not(json_data['success'])):
        # Si el Captcha no paso la prueba, se lanza un mensaje de error.
        return render(request, 'bancoCliente/index.html',
@@ -133,7 +133,7 @@ def preguntaSecreta(request):
             preguntas = preguntas[0]
 
             # Se muestra la pregunta secreta
-            return render(request, 
+            return render(request,
                         'bancoCliente/preguntas.html',
                         {'pregunta':preguntas.pregunta,
                         'idCuenta' :cuenta.id})
@@ -199,7 +199,7 @@ def confirmarPregunta(request):
     else:
         # Caso en el que la respuesta de seguridad se contestó de manera
         # incorrecta
-        return render(request, 
+        return render(request,
                     'bancoCliente/preguntas.html',
                     {'pregunta':preguntas.pregunta,
                     'idCuenta' :cuenta.id,
@@ -234,4 +234,3 @@ def procesarDatosCuenta(request):
     pregunta.save()
 
     return render(request, 'bancoCliente/cuentaCreada.html')
-

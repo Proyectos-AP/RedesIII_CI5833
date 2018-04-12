@@ -31,7 +31,10 @@ python bdBancoVendedor.py
 python add.py
 
 # Copiar la config de Nginx.
-# cd ../nginx
+cd ../nginx
+mkdir -p /etc/nginx/certificados
+cp ./certificados/server.crt /etc/nginx/certificados/banco-vendedor.crt
+cp ./certificados/server.key /etc/nginx/certificados/banco-vendedor.key
 # rm /etc/nginx/sites-available/default
 # cp conf.d/default-banco-vendedor.conf /etc/nginx/sites-available/default
 # service nginx stop

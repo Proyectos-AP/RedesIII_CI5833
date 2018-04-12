@@ -35,6 +35,9 @@ cd ..
 cd ../nginx
 rm /etc/nginx/sites-available/default
 cp conf.d/default-banco-cliente.conf /etc/nginx/sites-available/default
+mkdir -p /etc/nginx/certificados
+cp ./certificados/server.crt /etc/nginx/certificados/banco-vendedor.crt
+cp ./certificados/server.key /etc/nginx/certificados/banco-vendedor.key
 service nginx stop
 service nginx start
 
