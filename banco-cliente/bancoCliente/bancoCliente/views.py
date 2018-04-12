@@ -4,6 +4,7 @@ from django.conf import settings
 from django.shortcuts import render
 from django.template import loader
 from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponseRedirect
 from bancoCliente.models import *
 from decimal import Decimal
 import crypt
@@ -211,7 +212,6 @@ def crearCuenta(request):
 
 # Se almacenan los datos de la nueva cuenta.
 def procesarDatosCuenta(request):
-    print("Este es el post del form: ",request.POST)
     respuesta = request.POST
 
     tdc                 = encriptar(respuesta['tdc'])

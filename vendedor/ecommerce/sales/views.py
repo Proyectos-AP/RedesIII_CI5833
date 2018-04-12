@@ -10,7 +10,7 @@ from django.template import loader
 from sales.models import Product, Receipt, Preguntas
 from django.middleware.csrf import get_token
 from django.views.decorators.csrf import csrf_exempt
-from django.http import HttpResponse
+from django.http import HttpResponseRedirect
 import requests
 import json
 import crypt
@@ -18,6 +18,7 @@ import hashlib
 
 URL_BANCO_CLIENTE = "http://127.0.0.1:8080/"
 USERS_ATTEMPT = dict()
+USER=""
 
 
 def encriptar(mensaje):
@@ -103,20 +104,11 @@ def login_view(request):
             if user is not None:
                 login(request, user)
                 USERS_ATTEMPT[username] = 0
+                global USER 
+                USER = username
 
-                user    = User.objects.get(username=username)
-                previous_purchases = Receipt.objects.filter(client=user)
+                return HttpResponseRedirect('/platform')
 
-                # Redirect to sales platform
-                products_list = Product.objects.all()
-
-                context = {
-                    'products_list': products_list,
-                    'url': settings.URL_BANCO_CLIENTE,
-                    'username': username,
-                    'previous_purchases': previous_purchases
-                    }
-                return render(request,'sales/platform.html',context)
             else:
                 # Authentication failhere, we must count
                 if username in USERS_ATTEMPT.keys():
@@ -142,13 +134,20 @@ def platform(request):
         # Process a transaction
         print("Process a transaction")
     else:
+        print("El usuario es: ",USER)
+        user    = User.objects.get(username=USER)
+        previous_purchases = Receipt.objects.filter(client=user)
+
+        # Redirect to sales platform
         products_list = Product.objects.all()
-        previous_purchases = Receipt.objects.filter(client=request.user)
-        print("Productos", products_list)
+
         context = {
             'products_list': products_list,
-            'url': settings.URL_BANCO_CLIENTE
+            'url': settings.URL_BANCO_CLIENTE,
+            'username': USER,
+            'previous_purchases': previous_purchases
             }
+
         return render(request,'sales/platform.html',context)
 
 def locked(request):
