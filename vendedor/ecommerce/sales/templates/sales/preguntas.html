@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Proyecto II</title>
+    <style>
+      /* Style all input fields */
+      input {
+          width: 100%;
+          padding: 12px;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+          box-sizing: border-box;
+          margin-top: 6px;
+          margin-bottom: 16px;
+      }
+
+      /* Style the submit button */
+      input[type=submit] {
+          background-color: #4CAF50;
+          color: white;
+      }
+
+      p {
+        color: red;
+      }
+
+    </style>
+
+  </head>
+  <body>
+    <h1>Bienvenido al sitio del banco del cliente</h1>
+
+    <p>{{ mensaje }}</p><br><br>
+    <form action="/verificarPreguntaSeguridad/" method="post">
+        {% csrf_token %}
+        <label for="respuesta">{{ pregunta }}</label> <br><br>
+        <input id="respuesta" type="text" name="respuesta" required> <br><br>
+        <input id="id_pregunta" type="hidden" name="id_pregunta" value="{{ id_pregunta }}" required> <br>
+        <input id="username" type="hidden" name="username" value="{{ username }}" required> <br>
+        <input type="submit" value="OK">
+    </form>
+
+    <h4>Este sitio fue realizado por:</h4>
+    <ul>
+      <li>Alejandra Cordero, 12-10645</li>
+      <li>Fernando Pérez, 12-11152</li>
+      <li>Pablo Maldonado, 12-10561</li>
+    </ul>
+  </body>
+</html>
