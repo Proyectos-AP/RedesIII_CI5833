@@ -64,6 +64,11 @@ def login_view(request):
             if user is not None:
                 login(request, user)
                 USERS_ATTEMPT[username] = 0
+
+                user    = User.objects.get(username=username)
+                previous_purchases = Receipt.objects.filter(client=user)
+
+
                 # Redirect to sales platform
                 products_list = Product.objects.all()
                 print("Productos", products_list)
@@ -71,7 +76,8 @@ def login_view(request):
                 context = {
                     'products_list': products_list,
                     'url': URL_BANCO_CLIENTE,
-                    'username': username
+                    'username': username,
+                    'previous_purchases': previous_purchases
                     }
                 return render(request,'sales/platform.html',context)
             else:

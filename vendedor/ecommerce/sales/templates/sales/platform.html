@@ -36,8 +36,8 @@
         {% for receipt in previous_purchases %}
           <tr>
             <td> {{ receipt.id }} </td>
-            <td> {{ receipt.producto.descripcion }} </td>
-            <td> {{ receipt.producto.amount }} </td>
+            <td> {{ receipt.product.description }} </td>
+            <td> {{ receipt.product.amount }} </td>
           </tr>
         {% endfor %}
       </table>
