@@ -13,30 +13,31 @@ import json
 import pickle 
 import socket, ssl
 
-MONTO = 1000
-ID_VENDEDOR = "R1234"
-PUERTO_BANCO_VENDEDOR = 8082
-URL_BANCO_VENDEDOR    = 'www.r3bancovendedor.tk'
+MONTO = 0
+ID_VENDEDOR = ""
+COMPRADOR = ""
+ID_PRODUCTO = ""
 
-def comunicacion_banco_vendedor(idVendedor,idComprador,monto):
 
+def comunicacion_banco_vendedor(idVendedor,idComprador,monto,idProducto):
+
+    print("Este es el hostname",settings.URL_BANCO_VENDEDOR)
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     ssl_sock = ssl.wrap_socket(s,cert_reqs=ssl.CERT_REQUIRED, ca_certs='/home/prmm95/Documents/RedesIII_CI5833/banco-vendedor/certificados/server.crt')
-    ssl_sock.connect((URL_BANCO_VENDEDOR, PUERTO_BANCO_VENDEDOR))
+    ssl_sock.connect((settings.URL_BANCO_VENDEDOR, int(settings.PUERTO_BANCO_VENDEDOR) ))
 
     # Se contruye el mensaje que se va a enviar al banco del vendedor
     paquete = {"id": 10, "idVendedor":idVendedor,
                 "idComprador":idComprador, "monto": monto,
+                "idProducto" : idProducto,
                 "mensaje": "Batch al banco del vendedor"}
 
-    print(paquete)
     ssl_sock.write(pickle.dumps(paquete))
     # Se envia el mensaje
     data = ssl_sock.recv(8192)
 
     # Se recibe el mensaje de respuesta del servidor
     data = pickle.loads(data)
-    print("El mensaje es:",data["mensaje"])
 
     ssl_sock.close()
 
@@ -85,8 +86,12 @@ def index(request):
     respuesta = request.POST
     global ID_VENDEDOR 
     global MONTO
+    global COMPRADOR
+    global ID_PRODUCTO
     ID_VENDEDOR = respuesta['vendor']
     MONTO       = Decimal(respuesta['price'].strip(' "'))
+    COMPRADOR   = respuesta['comprador']
+    ID_PRODUCTO = respuesta['idProducto']
     print("Esto es lo que paso el vendedor",respuesta)
 
     return render(request, 'bancoCliente/index.html')
@@ -164,7 +169,7 @@ def confirmarPregunta(request):
 
             print("Cuenta comprador: ",ID_VENDEDOR,MONTO)
             # Aquí se hace la comunicación con el banco del vendedor
-            exito = comunicacion_banco_vendedor(ID_VENDEDOR,cuenta.ci,MONTO)
+            exito = comunicacion_banco_vendedor(ID_VENDEDOR,COMPRADOR,MONTO,ID_PRODUCTO)
 
             # Caso en el que la transaccion con el vendedor se hizo de manera
             # exitosa
@@ -195,8 +200,11 @@ def confirmarPregunta(request):
     else:
         # Caso en el que la respuesta de seguridad se contestó de manera
         # incorrecta
-        return render(request, 'bancoCliente/notificacion.html',
-                    {'mensaje':"La respuesta a la pregunta secreta es incorrecta."})
+        return render(request, 
+                    'bancoCliente/preguntas.html',
+                    {'pregunta':preguntas.pregunta,
+                    'idCuenta' :cuenta.id,
+                    'mensaje':"La respuesta a la pregunta secreta es incorrecta."})
 
 # Se muestra el form para crear una nueva cuenta.
 @csrf_exempt

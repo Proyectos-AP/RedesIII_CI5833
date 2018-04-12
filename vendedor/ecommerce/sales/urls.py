@@ -11,6 +11,7 @@ urlpatterns = [
     path('platform/',views.platform,name='platform'),
     path('locked/',views.locked,name='locked'),
     path('unlock/',views.unlock,name='unlock'),
-    path('crearFactura/',views.create_bill,name='create_bill')
+    path('crearFactura/',views.create_bill,name='create_bill'),
+    path('verificarPreguntaSeguridad/',views.verificarPreguntaSeguridad, name='verificarPreguntaSeguridad')
 
 ]

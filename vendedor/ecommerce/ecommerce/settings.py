@@ -28,11 +28,18 @@ SECRET_KEY = config['DJANGO_SECRET_KEY']
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1','a2.ac.labf.usb.ve','a4.ac.labf.usb.ve',
+                'a5.ac.labf.usb.ve','a6.ac.labf.usb.ve']
 
+
+# Email config
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'r3vendedorusb@gmail.com'
+EMAIL_HOST_PASSWORD = 'Vendedor1234'
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -124,7 +131,8 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-CAPTCHA_SECRET_KEY = config['CAPTCHA_SECRET_KEY']
+CAPTCHA_SECRET_KEY    = config['CAPTCHA_SECRET_KEY']
+URL_BANCO_CLIENTE     = config['URL_BANCO_CLIENTE']
 
 CACHES = {
     'default': {

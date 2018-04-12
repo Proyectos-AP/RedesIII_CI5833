@@ -11,3 +11,9 @@ class Receipt(models.Model):
     client = models.ForeignKey(User, on_delete=models.CASCADE, db_index=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE, db_index=True)
     # amount_payed = models.DecimalField(max_digits=20,decimal_places=2)
+
+# Preguntas de seguridad
+class Preguntas(models.Model):
+	usuario = models.ForeignKey(User, on_delete=models.CASCADE, db_index=True)
+	pregunta  = models.CharField(max_length=128, default="")
+	respuesta = models.CharField(max_length=152, default="")
