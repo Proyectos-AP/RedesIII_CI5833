@@ -3,13 +3,14 @@ from django.http import HttpResponse
 from django.conf import settings
 from django.shortcuts import render
 from django.template import loader
+from django.views.decorators.csrf import csrf_exempt
 from bancoCliente.models import *
 from decimal import Decimal
 import crypt
 import hashlib
 import requests
 import json
-import pickle 
+import pickle
 import socket, ssl
 
 MONTO = 1000
@@ -44,6 +45,7 @@ def comunicacion_banco_vendedor(idVendedor,idComprador,monto):
     else:
         return False
 
+@csrf_exempt
 def encriptar(mensaje):
 
     algo = "sha512".encode('utf-8')
@@ -58,6 +60,7 @@ def encriptar(mensaje):
 
     return '%s$%s$%s' % (algo.decode('utf-8'), salt.decode('utf-8'), hash_object.hexdigest())
 
+@csrf_exempt
 def comparador(raw_password, enc_password):
 
     algo, salt, hsh = enc_password.split('$')
@@ -65,6 +68,7 @@ def comparador(raw_password, enc_password):
 
     return hsh == hashlib.sha512(salt.encode('utf-8')+raw_password).hexdigest()
 
+@csrf_exempt
 def verificarSaldo(cuenta,monto):
 
     if (cuenta.saldo>=monto):
@@ -76,9 +80,10 @@ def verificarSaldo(cuenta,monto):
     return False
 
 # Se muestra el index de la pagina.
+@csrf_exempt
 def index(request):
     respuesta = request.POST
-    global ID_VENDEDOR 
+    global ID_VENDEDOR
     global MONTO
     ID_VENDEDOR = respuesta['vendor']
     MONTO       = Decimal(respuesta['price'].strip(' "'))
@@ -88,6 +93,7 @@ def index(request):
 
 
 # Se muestran las preguntas secretas.
+@csrf_exempt
 def preguntaSecreta(request):
 
     respuesta = request.POST
@@ -112,7 +118,7 @@ def preguntaSecreta(request):
         print("Mostrar mensaje de error")
         return render(request, 'bancoCliente/index.html',
                     {'mensaje':"No existe una cuenta asociada a dicha cédula."})
-    
+
     #elif (not(json_data['success'])):
     #    # Si el Captcha no paso la prueba, se lanza un mensaje de error.
     #    return render(request, 'bancoCliente/index.html',
@@ -128,7 +134,7 @@ def preguntaSecreta(request):
             preguntas = preguntas[0]
 
             # Se muestra la pregunta secreta
-            return render(request, 
+            return render(request,
                         'bancoCliente/preguntas.html',
                         {'pregunta':preguntas.pregunta,
                         'idCuenta' :cuenta.id})
@@ -136,6 +142,7 @@ def preguntaSecreta(request):
         return render(request, 'bancoCliente/index.html',
                     {'mensaje':"El número de la tarjeta de crédito es incorrecto."})
 
+@csrf_exempt
 def confirmarPregunta(request):
 
     respuesta = request.POST
@@ -192,6 +199,7 @@ def confirmarPregunta(request):
                     {'mensaje':"La respuesta a la pregunta secreta es incorrecta."})
 
 # Se muestra el form para crear una nueva cuenta.
+@csrf_exempt
 def crearCuenta(request):
     return render(request, 'bancoCliente/formCrearCuenta.html')
 
@@ -226,4 +234,3 @@ def procesarDatosCuenta(request):
     pregunta.save()
 
     return render(request, 'bancoCliente/cuentaCreada.html')
-
