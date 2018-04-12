@@ -2,6 +2,6 @@
 	"DJANGO_SECRET_KEY": "44pg%u-h=5ml*qdv&0evc+6jdp6#lc4p5^!4ke@s+f80jdh00^",
 	"CAPTCHA_SECRET_KEY": "6LcuEE8UAAAAAA8ESFpt1KYtEiBLHR5RA87qosgI",
 	"URL_BANCO_VENDEDOR":  "a2.ac.labf.usb.ve",
-	"PUERTO_BANCO_VENDEDOR" : "8082",
+	"PUERTO_BANCO_VENDEDOR" : "80",
 	"PATH_CERTIFICATE"      : "/etc/letsencrypt/live/a5.ac.labf.usb.ve/fullchain.pem"
 }
