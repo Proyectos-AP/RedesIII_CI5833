@@ -54,12 +54,15 @@ def echo_client(s):
 
     # Se envia el mensaje de respuesta al cliente
     s.send(pickle.dumps(response_message))
-    print('Se cierra la conexión con el banco del cliente')
+    print('Se cierra la conexión con el banco del cliente...')
 
     # Se le informa al vendedor que la compra fue realizada de 
     # manera exitosa
     if (response_message["id"] == 200):
         inform_vendor_page(data)
+        print("Se le informa al vendedor "+data["idVendedor"]+" que la compra"+
+            " del usuario "+data["idComprador"]+" ,por el monto de "+str(data["monto"])
+            +" ya fué realizada.")
 
 
 def echo_server(address):
@@ -69,7 +72,7 @@ def echo_server(address):
     s.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
 
     s_ssl = ssl.wrap_socket(s, keyfile=KEYFILE, certfile=CERTFILE, server_side=True)
-    print("El banco del vendedor esta funcionando...")
+    print("El banco del vendedor está funcionando...")
     while True:
         try:
             (c,a) = s_ssl.accept()

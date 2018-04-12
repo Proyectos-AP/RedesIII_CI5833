@@ -156,9 +156,12 @@ def locked(request):
 
 @csrf_exempt
 def create_bill(request):
-    print("Se esta creando la factura")
-    print(request.POST)
+ 
     respuesta = request.POST
+
+    print("Se esta creando una nueva factura para el usuario: "
+        +respuesta['idComprador'])
+
 
     # Se crea la factura del usuario
     user    = User.objects.get(username=respuesta['idComprador'])
@@ -166,6 +169,7 @@ def create_bill(request):
     factura = Receipt(client=user,product=producto)
     factura.save()
 
+    # Cuerpo del correo electrónico
     body = "Usted ha adquirido el producto con descripción: "+\
             producto.description+" . El monto a pagar fué: "+\
             str(producto.amount)+" y el ID de la factura es: "+\
@@ -174,13 +178,16 @@ def create_bill(request):
     email = EmailMessage('Factura de comercio', 
                         body, to=[respuesta['idComprador']])
     email.send()
+
+    print("Se envió un correo electrónico al usuario: "
+        +respuesta['idComprador']+" con una factura cuyo ID es: "
+        +str(factura.id) )
     
     return HttpResponse('200')
 
 
 def unlock(request):
     if request.method == 'POST':
-        print("Entre aqui!!")
 
         username = request.POST['username']
         user    = User.objects.get(username=username)

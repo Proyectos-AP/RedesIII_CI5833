@@ -21,11 +21,11 @@ ID_PRODUCTO = ""
 
 def comunicacion_banco_vendedor(idVendedor,idComprador,monto,idProducto):
 
-    print("Este es el hostname",settings.URL_BANCO_VENDEDOR)
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     ssl_sock = ssl.wrap_socket(s,cert_reqs=ssl.CERT_REQUIRED, ca_certs='/home/prmm95/Documents/RedesIII_CI5833/banco-vendedor/certificados/server.crt')
     ssl_sock.connect((settings.URL_BANCO_VENDEDOR, int(settings.PUERTO_BANCO_VENDEDOR) ))
 
+    print("Se esta realizando la comunicación con el banco del vendedor...")
     # Se contruye el mensaje que se va a enviar al banco del vendedor
     paquete = {"id": 10, "idVendedor":idVendedor,
                 "idComprador":idComprador, "monto": monto,
@@ -69,17 +69,6 @@ def comparador(raw_password, enc_password):
 
     return hsh == hashlib.sha512(salt.encode('utf-8')+raw_password).hexdigest()
 
-@csrf_exempt
-def verificarSaldo(cuenta,monto):
-
-    if (cuenta.saldo>=monto):
-
-        cuenta.saldo = cuenta.saldo - monto
-        cuenta.save()
-        return True
-
-    return False
-
 # Se muestra el index de la pagina.
 @csrf_exempt
 def index(request):
@@ -88,11 +77,15 @@ def index(request):
     global MONTO
     global COMPRADOR
     global ID_PRODUCTO
+
     ID_VENDEDOR = respuesta['vendor']
     MONTO       = Decimal(respuesta['price'].strip(' "'))
     COMPRADOR   = respuesta['comprador']
     ID_PRODUCTO = respuesta['idProducto']
-    print("Esto es lo que paso el vendedor",respuesta)
+
+    print("El usuario "+COMPRADOR+" ha realizado conexión con el banco"+
+        " para pagar el producto con ID "+ID_PRODUCTO +" perteneciente"+
+        " al vendedor "+ID_VENDEDOR)
 
     return render(request, 'bancoCliente/index.html')
 
@@ -154,7 +147,6 @@ def confirmarPregunta(request):
     cuenta = Cuentas.objects.get(pk=respuesta['id_cuenta'])
 
     if (not(cuenta)):
-        print("Mostrar mensaje de error")
         return render(request, 'bancoCliente/index.html',
                     {'mensaje':"El número de la tarjeta de crédito es incorrecto."})
 
@@ -165,9 +157,8 @@ def confirmarPregunta(request):
     if (comparador(respuesta['respuesta'],preguntas.respuesta)):
         # Se verifica si el comprador tiene el dinero necesario para
         # realizar la compra.
-        if (verificarSaldo(cuenta,MONTO)):
+        if (cuenta.saldo>=MONTO):
 
-            print("Cuenta comprador: ",ID_VENDEDOR,MONTO)
             # Aquí se hace la comunicación con el banco del vendedor
             exito = comunicacion_banco_vendedor(ID_VENDEDOR,COMPRADOR,MONTO,ID_PRODUCTO)
 
@@ -175,9 +166,16 @@ def confirmarPregunta(request):
             # exitosa
             if (exito):
 
+                print("Se realizó con exito la comunicación con el banco del vendedor...")
+
+                saldo_anterior = cuenta.saldo
                 # Se modifica el saldo del comprador
-                cuenta.monto = cuenta.saldo - MONTO
+                cuenta.saldo = cuenta.saldo - MONTO
                 cuenta.save()
+
+                print("El usuario "+str(cuenta.ci)+" ,antes tenía en su cuenta: "+str(saldo_anterior)+
+                        " ,pero se le descontaron "+str(MONTO)+" debido a un compra realizada."+
+                    " Ahora, su saldo total es: "+str(cuenta.saldo))
 
                 # Se muestra un mensaje de exito
                 return render(request, 'bancoCliente/notificacion.html',
@@ -220,12 +218,6 @@ def procesarDatosCuenta(request):
     numero_secreto      = encriptar(respuesta['numero_secreto'])
     fecha_vencimiento   = encriptar(respuesta['fecha_vencimiento'])
     respuesta_seguridad = encriptar(respuesta['respuesta_seguridad'])
-
-    print("TDC: ",tdc)
-    print("Número secreto: ",encriptar(respuesta['numero_secreto']))
-    print("Fecha vencimiento: ",encriptar(respuesta['fecha_vencimiento']))
-
-    print(comparador(respuesta['tdc'], tdc))
 
     cuenta   = Cuentas(    ci                = respuesta['ci'],
                         tdc_number        = tdc,
