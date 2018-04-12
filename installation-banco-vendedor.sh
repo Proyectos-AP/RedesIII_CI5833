@@ -18,7 +18,7 @@ git clone https://github.com/Proyectos-AP/RedesIII_CI5833.git
 apt-get install python3-venv -y
 
 # Configuración del vendedor
-cd RedesIII_CI5833/vendedor
+cd RedesIII_CI5833/banco-vendedor
 python3 -m venv env
 
 # Activar sudo su aquí
@@ -27,17 +27,15 @@ pip install --upgrade pip
 pip install -r requirements.txt
 
 # Crear la BD de sqlite.
-cd ecommerce
-python manage.py migrate
-cd ..
+python bdBancoVendedor.py
+python add.py
 
 # Copiar la config de Nginx.
-cd ../nginx
-rm /etc/nginx/sites-available/default
-cp conf.d/default-vendedor.conf /etc/nginx/sites-available/default
-service nginx stop
-service nginx start
+# cd ../nginx
+# rm /etc/nginx/sites-available/default
+# cp conf.d/default-banco-vendedor.conf /etc/nginx/sites-available/default
+# service nginx stop
+# service nginx start
 
 # Gunicorn para servir la app.
-cd ../vendedor/ecommerce
-gunicorn --bind 127.0.0.1:8000 ecommerce.wsgi
+python server.py

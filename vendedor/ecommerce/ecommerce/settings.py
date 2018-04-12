@@ -29,7 +29,7 @@ SECRET_KEY = config['DJANGO_SECRET_KEY']
 DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1','a2.ac.labf.usb.ve','a4.ac.labf.usb.ve',
-                'a5.ac.labf.usb.ve','a6.ac.labf.usb.ve']
+                'a5.ac.labf.usb.ve','a6.ac.labf.usb.ve', '159.90.9.5']
 
 
 # Email config
