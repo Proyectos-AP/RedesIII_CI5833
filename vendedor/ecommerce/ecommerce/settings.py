@@ -132,6 +132,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 CAPTCHA_SECRET_KEY = config['CAPTCHA_SECRET_KEY']
+URL_BANCO_CLIENTE  = config['URL_BANCO_CLIENTE']
 
 CACHES = {
     'default': {

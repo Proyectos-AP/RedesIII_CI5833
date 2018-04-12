@@ -112,7 +112,7 @@ def login_view(request):
 
                 context = {
                     'products_list': products_list,
-                    'url': URL_BANCO_CLIENTE,
+                    'url': settings.URL_BANCO_CLIENTE,
                     'username': username,
                     'previous_purchases': previous_purchases
                     }
@@ -147,7 +147,7 @@ def platform(request):
         print("Productos", products_list)
         context = {
             'products_list': products_list,
-            'url': URL_BANCO_CLIENTE
+            'url': settings.URL_BANCO_CLIENTE
             }
         return render(request,'sales/platform.html',context)
 
