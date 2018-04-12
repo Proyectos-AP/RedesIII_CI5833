@@ -7,8 +7,8 @@ import bdBancoVendedor
 from pony.orm import *
 from socket import AF_INET, SOCK_STREAM, SO_REUSEADDR, SOL_SOCKET, SHUT_RDWR
 
-KEYFILE = '/etc/letsencrypt/live/a2.ac.labf.usb.ve/privkey.pem'
-CERTFILE = '/etc/letsencrypt/live/a2.ac.labf.usb.ve/fullchain.pem'
+KEYFILE = './certificados/server.key'
+CERTFILE = './certificados/server.crt'
 URL_VENDEDOR = 'https://a4.ac.labf.usb.ve/crearFactura/'
 
 
@@ -85,4 +85,4 @@ def echo_server(address):
             c.close()
 
 # echo_server((socket.gethostbyname('www.r3bancovendedor.tk'), 8082))
-echo_server((socket.gethostbyname('a2.ac.labf.usb.ve'), 8080))
+echo_server((socket.gethostbyname('a2.ac.labf.usb.ve'), 443))
