@@ -7,8 +7,8 @@ import bdBancoVendedor
 from pony.orm import *
 from socket import AF_INET, SOCK_STREAM, SO_REUSEADDR, SOL_SOCKET, SHUT_RDWR
 
-KEYFILE = '/etc/letsencrypt/live/a2.ac.labf.usb.ve/privkey.pem'
-CERTFILE = '/etc/letsencrypt/live/a2.ac.labf.usb.ve/fullchain.pem'
+KEYFILE = '/etc/nginx/certificados/server.key'
+CERTFILE = '/etc/nginx/certificados/server.crt'
 CA_CERT = '/etc/nginx/certificados/ca_cert_letsencrypt.crt'
 URL_VENDEDOR = 'https://a4.ac.labf.usb.ve/crearFactura/'
 
@@ -72,7 +72,7 @@ def echo_server(address):
     s.listen(5)
     s.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
 
-    s_ssl = ssl.wrap_socket(s, keyfile=KEYFILE, certfile=CERTFILE, ca_certs=CA_CERT, server_side=True)
+    s_ssl = ssl.wrap_socket(s, keyfile=KEYFILE, certfile=CERTFILE, server_side=True)
     print("El banco del vendedor está funcionando...")
     while True:
         try:
@@ -86,4 +86,4 @@ def echo_server(address):
             c.close()
 
 # echo_server((socket.gethostbyname('www.r3bancovendedor.tk'), 8082))
-echo_server((socket.gethostbyname('a2.ac.labf.usb.ve'), 443))
+echo_server((socket.gethostbyname('a2.ac.labf.usb.ve'), 8082))
