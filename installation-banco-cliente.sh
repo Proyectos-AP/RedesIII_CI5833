@@ -29,14 +29,15 @@ pip install -r requirements.txt
 # Crear la BD de sqlite.
 cd bancoCliente
 python manage.py migrate
+cd ..
 
 # Copiar la config de Nginx.
 cd ../nginx
-rm /etc/nginx/sites-avaiable/default
-cp conf.d/default-banco-cliente.conf /etc/nginx/sites-avaiable/default
+rm /etc/nginx/sites-available/default
+cp conf.d/default-banco-cliente.conf /etc/nginx/sites-available/default
 service nginx stop
 service nginx start
 
 # Gunicorn para servir la app.
-cd ../banco-cliente
-gunicorn --bind 127.0.0.1:8080 bancoCliente.wsgi
+cd ../banco-cliente/bancoCliente
+gunicorn --bind 127.0.0.1:8000 bancoCliente.wsgi
