@@ -7,6 +7,9 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.template import loader
 from sales.models import Product, Receipt
+from django.middleware.csrf import get_token
+from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponse
 import requests
 import json
 
@@ -64,9 +67,10 @@ def login_view(request):
                 # Redirect to sales platform
                 products_list = Product.objects.all()
                 print("Productos", products_list)
+                print("TOKEN", get_token(request))
                 context = {
                     'products_list': products_list,
-                    'url': URL_BANCO_CLIENTE
+                    'url': URL_BANCO_CLIENTE,
                     }
                 return render(request,'sales/platform.html',context)
             else:
@@ -106,6 +110,12 @@ def platform(request):
 
 def locked(request):
     return render(request,'sales/locked.html')
+
+@csrf_exempt
+def create_bill(request):
+    print("Se esta creando la factura")
+    return HttpResponse('200')
+
 
 def unlock(request):
     if request.method == 'POST':

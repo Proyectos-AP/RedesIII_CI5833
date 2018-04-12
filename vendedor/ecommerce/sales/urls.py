@@ -10,6 +10,7 @@ urlpatterns = [
     path('logout/',views.logout_view,name='logout'),
     path('platform/',views.platform,name='platform'),
     path('locked/',views.locked,name='locked'),
-    path('unlock/',views.unlock,name='unlock')
+    path('unlock/',views.unlock,name='unlock'),
+    path('crearFactura/',views.create_bill,name='create_bill')
 
 ]
