@@ -7,15 +7,42 @@ from django.http import HttpResponse
 from django.core.mail import EmailMessage
 from django.shortcuts import render
 from django.template import loader
-from sales.models import Product, Receipt
+from sales.models import Product, Receipt, Preguntas
 from django.middleware.csrf import get_token
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 import requests
 import json
+import crypt
+import hashlib
 
 URL_BANCO_CLIENTE = "http://127.0.0.1:8080/"
 USERS_ATTEMPT = dict()
+
+
+def encriptar(mensaje):
+
+    algo = "sha512".encode('utf-8')
+
+    mensaje = str(mensaje).encode('utf-8')
+
+    # Se crea el bit de salt
+    salt = crypt.mksalt(crypt.METHOD_SHA512).split("$")[-1].encode('utf-8')
+
+    # Se encripta el mensaje
+    hash_object = hashlib.sha512(salt+mensaje)
+
+    return '%s$%s$%s' % (algo.decode('utf-8'), salt.decode('utf-8'), hash_object.hexdigest())
+
+
+def comparador(raw_password, enc_password):
+
+    algo, salt, hsh = enc_password.split('$')
+    raw_password = str(raw_password).encode('utf-8')
+
+    return hsh == hashlib.sha512(salt.encode('utf-8')+raw_password).hexdigest()
+
+
 # Create your views here.
 def index(request):
 
@@ -26,14 +53,25 @@ def index(request):
 def register(request):
     if request.method == 'POST':
         try:
-            username = request.POST['username']
-            password = request.POST['password']
+            username  = request.POST['username']
+            password  = request.POST['password']
+            pregunta  = request.POST['pregunta_seguridad']
+            respuesta = request.POST['respuesta']
 
             user = User.objects.create_user(username=username,password=password)
             user.save()
 
+            # Se encripta la respuesta
+            respuesta_secreta = encriptar(respuesta)
 
-            return render(request,'sales/index.html')
+            # Se almacena la pregunta secreta
+            pregunta = Preguntas(usuario=user,pregunta=pregunta,
+                                respuesta=respuesta_secreta)
+            pregunta.save()
+
+
+            return render(request,'sales/index.html',
+                        {'mensaje_positivo':"El registro se ha realizado de manera satisfatoria"})
         except:
             return render(request,'sales/error.html')
 
@@ -142,10 +180,47 @@ def create_bill(request):
 
 def unlock(request):
     if request.method == 'POST':
+        print("Entre aqui!!")
+
         username = request.POST['username']
-        reset(username=username)
-        USERS_ATTEMPT[username] = 0
-        return(render(request,'sales/index.html'))
+        user    = User.objects.get(username=username)
+
+        # Se busca la pregunta perteneciente al usuario
+        pregunta = Preguntas.objects.get(usuario=user)
+
+        context = {'pregunta': pregunta.pregunta,
+                    'id_pregunta':pregunta.id,
+                    'username': username
+                    }
+
+        # Redirigimos al form en donde se realizara
+        # la pregunta de seguridad
+        return(render(request,'sales/preguntas.html',context))
 
     else:
         return(render(request,'sales/unlock.html'))
+
+
+def verificarPreguntaSeguridad(request):
+
+    respuesta   = request.POST['respuesta']
+    id_pregunta = request.POST['id_pregunta']
+    username    = request.POST['username']
+
+    pregunta = Preguntas.objects.get(pk=id_pregunta)
+
+    # Se verifica que la respuesta sea correcta
+    if (comparador(respuesta,pregunta.respuesta)):
+
+        reset(username=username)
+        USERS_ATTEMPT[username] = 0
+        return(render(request,'sales/index.html',
+                        {'mensaje_positivo':"Su usuario ha sido desbloqueado"}))
+    else:
+        context = {'pregunta': pregunta.pregunta,
+                    'id_pregunta':pregunta.id,
+                    'mensaje': "La respuesta en incorrecta"
+                    }
+
+        return(render(request,'sales/preguntas.html',context))
+    
