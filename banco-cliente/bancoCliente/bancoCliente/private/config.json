@@ -6,5 +6,5 @@
 	"PATH_BANCO_CLIENTE_CERTIFICATE"      : "/etc/letsencrypt/live/a5.ac.labf.usb.ve/fullchain.pem",
 	"PATH_BANCO_CLIENTE_PRIV_KEY"      : "/etc/letsencrypt/live/a5.ac.labf.usb.ve/privkey.pem",
 	"PATH_BANCO_VENDEDOR_CERTIFICATE": "/etc/nginx/certificados/banco-vendedor.crt",
-	"PATH_CA_CERTIFICATE": "/etc/nginx/certificados/ca_cert_letsencrypt.crt",
+	"PATH_CA_CERTIFICATE": "/etc/nginx/certificados/ca_cert_letsencrypt.crt"
 }
