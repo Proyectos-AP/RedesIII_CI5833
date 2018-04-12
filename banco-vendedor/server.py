@@ -85,4 +85,4 @@ def echo_server(address):
             c.close()
 
 # echo_server((socket.gethostbyname('www.r3bancovendedor.tk'), 8082))
-echo_server((socket.gethostbyname('a2.ac.labf.usb.ve'), 80))
+echo_server((socket.gethostbyname('a2.ac.labf.usb.ve'), 8080))
