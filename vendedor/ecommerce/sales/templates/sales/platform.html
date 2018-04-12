@@ -5,8 +5,8 @@
     <title>Plataforma de ventas</title>
   </head>
   <body>
-    <h1>En este sitio encontrará los productos disponibles</h1>
-
+    <h1>En este sitio encontrará los productos disponibles y sus compras realizadas</h1>
+    <h2>Productos Disponibles</h2>
     {% if products_list|length > 0 %}
         <ul>
         {% for product in products_list %}
@@ -24,6 +24,27 @@
     {% else %}
         <p>No hay productos disponibles en la aplicación.</p>
     {% endif %}
+
+    <h2>Compras realizadas</h2>
+    {% if previous_purchases|length > 0 %}
+      <table>
+        <tr>
+          <th> No Factura </th>
+          <th> Producto </th>
+          <th> Monto </th>
+        </tr>
+        {% for receipt in previous_purchases %}
+          <tr>
+            <td> {{ receipt.id }} </td>
+            <td> {{ receipt.producto.descripcion }} </td>
+            <td> {{ receipt.producto.amount }} </td>
+          </tr>
+        {% endfor %}
+      </table>
+    {% else %}
+      <h3> Usted no ha realizado ninguna compra </h3>
+    {% endif %}
+
     <a href="{% url 'sales:logout' %}">Cerrar sesión</a>
   </body>
 </html>
