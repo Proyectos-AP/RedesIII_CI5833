@@ -13,6 +13,7 @@
             <li>{{product.description}} - {{product.amount}} -
             <form target="_blank" action="{{url}}" method="post">
               {% csrf_token %}
+              {{product.vendor}}
               <input type="hidden" name="price" value="{{product.amount}}">
               <input type="hidden" name="vendor" value="{{product.vendor}}">
               <input type="hidden" name="comprador" value="{{username}}">
