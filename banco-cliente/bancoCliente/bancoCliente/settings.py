@@ -11,16 +11,19 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 import os
+import json
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+with open(os.path.join(BASE_DIR,"bancoCliente/private/config.json") ,"r") as config_file:
+    config = json.load(fp=config_file)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '44pg%u-h=5ml*qdv&0evc+6jdp6#lc4p5^!4ke@s+f80jdh00^'
+SECRET_KEY = config['DJANGO_SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -123,4 +126,6 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-CAPTCHA_SECRET_KEY = os.environ.get('CAPTCHA_SECRET_KEY')
+CAPTCHA_SECRET_KEY    = config['CAPTCHA_SECRET_KEY']
+URL_BANCO_VENDEDOR    = config['URL_BANCO_VENDEDOR']
+PUERTO_BANCO_VENDEDOR = config['PUERTO_BANCO_VENDEDOR']
