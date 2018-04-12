@@ -25,7 +25,7 @@ SECRET_KEY = '44pg%u-h=5ml*qdv&0evc+6jdp6#lc4p5^!4ke@s+f80jdh00^'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['a2.ac.labf.usb.ve','a4.ac.labf.usb.ve',
+ALLOWED_HOSTS = ['127.0.0.1','a2.ac.labf.usb.ve','a4.ac.labf.usb.ve',
                 'a5.ac.labf.usb.ve','a6.ac.labf.usb.ve']
 
 

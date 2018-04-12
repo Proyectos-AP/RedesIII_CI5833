@@ -68,11 +68,9 @@ def login_view(request):
                 user    = User.objects.get(username=username)
                 previous_purchases = Receipt.objects.filter(client=user)
 
-
                 # Redirect to sales platform
                 products_list = Product.objects.all()
-                print("Productos", products_list)
-                print("TOKEN", get_token(request))
+
                 context = {
                     'products_list': products_list,
                     'url': URL_BANCO_CLIENTE,
@@ -87,9 +85,9 @@ def login_view(request):
                 else:
                     USERS_ATTEMPT[username] = 1
 
-                return render(request,'sales/login.html')
+                return render(request,'sales/login.html',{'mensaje': "Usuario o clave incorrecta"})
         else:
-            return render(request,'sales/login.html')
+            return render(request,'sales/login.html',{'mensaje': "Problemas con el Captcha"})
 
         # Verify if the user is blocked
         # Verify number of login attempts
