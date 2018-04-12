@@ -20,13 +20,19 @@
       color: white;
   }
 
+  p {
+    color: red;
+  }
+
 </style>
 <script src='https://www.google.com/recaptcha/api.js'></script>
 </head>
   <body>
 
     <h3>Inicio de sesión en el sitio de comercio</h3>
-    <p>Template obtenido, traducido y adaptado del que se encuentra en <a href="https://www.w3schools.com/howto/howto_js_password_validation.asp">w3schools</a></p>
+    <h6>Template obtenido, traducido y adaptado del que se encuentra en <a href="https://www.w3schools.com/howto/howto_js_password_validation.asp">w3schools</a></h6>
+
+    <p>{{ mensaje }}</p><br><br>
 
     <div class="container">
       <form action="{% url 'sales:login' %}" method="post">

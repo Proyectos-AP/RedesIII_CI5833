@@ -29,8 +29,8 @@ def check_message(mensaje):
         cuenta = cuenta_vendedor[0]
         # Se ajusta el saldo del vendedor
         cuenta.monto = cuenta.monto + mensaje["monto"]
-        print("Se acaban de descontar: "+str(mensaje["monto"])+
-            " de la cuenta de "+ mensaje["idVendedor"]+
+        print("Se acaban de sumar: "+str(mensaje["monto"])+
+            " en la cuenta de "+ mensaje["idVendedor"]+
             ". Su saldo ahora es de: "+str(cuenta.monto))
         commit()
 

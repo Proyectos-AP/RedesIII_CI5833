@@ -202,8 +202,11 @@ def confirmarPregunta(request):
     else:
         # Caso en el que la respuesta de seguridad se contestó de manera
         # incorrecta
-        return render(request, 'bancoCliente/notificacion.html',
-                    {'mensaje':"La respuesta a la pregunta secreta es incorrecta."})
+        return render(request, 
+                    'bancoCliente/preguntas.html',
+                    {'pregunta':preguntas.pregunta,
+                    'idCuenta' :cuenta.id,
+                    'mensaje':"La respuesta a la pregunta secreta es incorrecta."})
 
 # Se muestra el form para crear una nueva cuenta.
 @csrf_exempt

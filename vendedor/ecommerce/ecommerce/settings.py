@@ -28,7 +28,8 @@ SECRET_KEY = config['DJANGO_SECRET_KEY']
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['a2.ac.labf.usb.ve','a4.ac.labf.usb.ve',
+                'a5.ac.labf.usb.ve','a6.ac.labf.usb.ve']
 
 
 # Application definition

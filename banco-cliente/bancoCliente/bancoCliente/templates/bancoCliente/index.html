@@ -4,12 +4,35 @@
     <meta charset="utf-8">
     <title>Proyecto II</title>
     <script src='https://www.google.com/recaptcha/api.js'></script>
+    <style>
+      /* Style all input fields */
+      input {
+          width: 100%;
+          padding: 12px;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+          box-sizing: border-box;
+          margin-top: 6px;
+          margin-bottom: 16px;
+      }
+
+      /* Style the submit button */
+      input[type=submit] {
+          background-color: #4CAF50;
+          color: white;
+      }
+
+      p {
+        color: red;
+      }
+
+    </style>
 
   </head>
   <body>
     <h1>Bienvenido al sitio del banco del cliente</h1>
 
-    {{ mensaje }}
+    <p>{{ mensaje }}</p><br><br>
     <form action="/preguntaSecreta" method="post">
         {% csrf_token %}
         <label for="ci">CI: </label>
@@ -21,7 +44,7 @@
 
     </form>
 
-    <p>Este sitio fue realizado por:</p>
+    <h4>Este sitio fue realizado por:</h4>
     <ul>
       <li>Alejandra Cordero, 12-10645</li>
       <li>Fernando Pérez, 12-11152</li>
