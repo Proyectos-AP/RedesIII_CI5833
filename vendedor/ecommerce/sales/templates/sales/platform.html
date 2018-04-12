@@ -7,6 +7,7 @@
   <body>
     <h1>En este sitio encontrará los productos disponibles</h1>
 
+    <button type="button" onclick="alert('Hello world!')">Listar mis facturas</button>
     {% if products_list %}
         <ul>
         {% for product in products_list %}
@@ -17,7 +18,6 @@
               <input type="hidden" name="vendor" value="{{product.vendor}}">
               <input type="submit" value="Comprar">
             </form>
-            <a href="http://127.0.0.1:8080/" target="_blank">Comprar</a> </li>
         {% endfor %}
         </ul>
     {% else %}
