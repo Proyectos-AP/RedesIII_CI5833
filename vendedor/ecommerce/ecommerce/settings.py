@@ -36,8 +36,8 @@ ALLOWED_HOSTS = ['127.0.0.1','a2.ac.labf.usb.ve','a4.ac.labf.usb.ve',
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'r3vendedorusb@gmail.com'
-EMAIL_HOST_PASSWORD = 'Vendedor1234'
+EMAIL_HOST_USER = 'noreplysigpaeusb@gmail.com'
+EMAIL_HOST_PASSWORD = 'LXHyCmFD9rQPCqC'
 
 # Application definition
 INSTALLED_APPS = [
