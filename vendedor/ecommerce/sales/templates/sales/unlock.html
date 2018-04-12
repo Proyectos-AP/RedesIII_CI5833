@@ -27,8 +27,8 @@
     <h1>Para desbloquear su cuenta, introduzca su usuario</h1>
     <form action="{% url 'sales:unlock' %}" method="post">
       {% csrf_token %}
-      <label for="username">Nombre de usuario</label>
-      <input type="text" id="username" name="username" value="">
+      <label for="username">Correo electrónico</label>
+      <input type="email" id="username" name="username" value="">
       <input type="submit" name="" value="Reto de seguridad">
     </form>
   </body>

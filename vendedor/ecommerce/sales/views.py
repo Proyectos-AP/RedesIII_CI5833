@@ -172,7 +172,7 @@ def create_bill(request):
             str(factura.id)
     # Se envia un correo al usuario con su factura
     email = EmailMessage('Factura de comercio', 
-                        body, to=['alejandra.corderogarcia21@gmail.com'])
+                        body, to=[respuesta['idComprador']])
     email.send()
     
     return HttpResponse('200')
