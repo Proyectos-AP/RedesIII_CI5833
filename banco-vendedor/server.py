@@ -7,8 +7,8 @@ import bdBancoVendedor
 from pony.orm import *
 from socket import AF_INET, SOCK_STREAM, SO_REUSEADDR, SOL_SOCKET, SHUT_RDWR
 
-KEYFILE = './certificados/server.key'
-CERTFILE = './certificados/server.crt'
+KEYFILE = '/etc/letsencrypt/live/a2.ac.labf.usb.ve/privkey.pem'
+CERTFILE = '/etc/letsencrypt/live/a2.ac.labf.usb.ve/fullchain.pem'
 URL_VENDEDOR = 'https://a4.ac.labf.usb.ve/crearFactura/'
 
 
@@ -37,7 +37,7 @@ def check_message(mensaje):
         # Se retorna un mensaje de exito
         return {"id":200, "mensaje":"Exito"}
 
-# Función que se encarga de informarle al la pagina del vendedor que la 
+# Función que se encarga de informarle al la pagina del vendedor que la
 # compra fue efectuara de forma satisfactoria
 def inform_vendor_page(mensaje):
     response = requests.post(URL_VENDEDOR, data = mensaje)
@@ -56,7 +56,7 @@ def echo_client(s):
     s.send(pickle.dumps(response_message))
     print('Se cierra la conexión con el banco del cliente...')
 
-    # Se le informa al vendedor que la compra fue realizada de 
+    # Se le informa al vendedor que la compra fue realizada de
     # manera exitosa
     if (response_message["id"] == 200):
         inform_vendor_page(data)
@@ -85,4 +85,4 @@ def echo_server(address):
             c.close()
 
 # echo_server((socket.gethostbyname('www.r3bancovendedor.tk'), 8082))
-echo_server((socket.gethostbyname('localhost'), 8082))
+echo_server((socket.gethostbyname('a2.ac.labf.usb.ve'), 80))
