@@ -3,5 +3,5 @@
 	"CAPTCHA_SECRET_KEY": "6LcuEE8UAAAAAA8ESFpt1KYtEiBLHR5RA87qosgI",
 	"URL_BANCO_VENDEDOR":  "a2.ac.labf.usb.ve",
 	"PUERTO_BANCO_VENDEDOR" : "8082",
-	"PATH_CERTIFICATE"      : "/home/prmm95/Documents/RedesIII_CI5833/banco-vendedor/certificados/server.crt"
+	"PATH_CERTIFICATE"      : "/etc/letsencrypt/live/a5.ac.labf.usb.ve/fullchain.pem"
 }
